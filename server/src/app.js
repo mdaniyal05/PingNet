@@ -3,6 +3,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 
+// Import routers
+const authRouter = require("./routes/auth.route");
+
 const whiteList = ["http://localhost:3000"];
 
 const corsOptions = {
@@ -20,5 +23,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/api/v1/auth", authRouter);
 
 module.exports = app;

@@ -23,6 +23,14 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    about: {
+      type: String,
+      required: [true, "About is required."],
+    },
+    dateOfBirth: {
+      type: Date,
+      required: [true, "Date of birth is required."],
+    },
     avatar: {
       type: String,
       required: [true, "Avatar is required."],
