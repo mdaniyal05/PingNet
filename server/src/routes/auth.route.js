@@ -7,8 +7,13 @@ const {
   deleteUserAccount,
   refreshToken,
 } = require("../controllers/auth.controller");
+const upload = require("../middlewares/multer.middleware");
 
-router.post("/register", registerUser);
+router.post(
+  "/register",
+  upload.fields([{ name: "avatar", maxCount: 1 }]),
+  registerUser
+);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.delete("/delete-account", deleteUserAccount);

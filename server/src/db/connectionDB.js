@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const DB_NAME = require("../constants");
+const { DB_NAME } = require("../constants");
 
 const connectDB = async () => {
   const URI = `${process.env.MONGODB_URI}/${DB_NAME}`;
