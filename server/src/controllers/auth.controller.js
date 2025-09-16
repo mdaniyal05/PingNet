@@ -3,6 +3,43 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
 const uploadFileOnCloudinary = require("../service/cloudinary");
+const generateJwtToken = require("../utils/generateJwtToken");
+
+const generateAccessandRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      throw new ApiError(404, "User not found.");
+    }
+
+    const refreshToken = generateJwtToken(
+      { userId: user._id },
+      process.env.REFRESH_TOKEN_SECRET,
+      process.env.REFRESH_TOKEN_EXPIRY
+    );
+
+    const accessToken = generateJwtToken(
+      {
+        userId: user._id,
+        username: user.username,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      process.env.ACCESS_TOKEN_EXPIRY
+    );
+
+    user.refreshToken = refreshToken;
+
+    await user.save({ validateBeforeSave: false });
+
+    return { refreshToken, accessToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Something went wrong while generating access and refresh token."
+    );
+  }
+};
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, fullname, email, about, dateOfBirth, password } = req.body;
