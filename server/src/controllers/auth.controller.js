@@ -5,6 +5,12 @@ const ApiResponse = require("../utils/apiResponse");
 const uploadFileOnCloudinary = require("../service/cloudinary");
 const generateJwtToken = require("../utils/generateJwtToken");
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "strict",
+};
+
 const generateAccessandRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId).select("-password");
@@ -102,15 +108,58 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "ok",
-  });
+  const { email, username, password } = req.body;
+
+  if (!(email || username)) {
+    throw new ApiError(400, "Email or username is required.");
+  }
+
+  const user = await User.findOne({ $or: [{ email }, { username }] }).select(
+    "-password -refreshToken"
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(password);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Invalid password.");
+  }
+
+  const { accessToken, refreshToken } = generateAccessandRefreshToken(user._id);
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken: accessToken, user: user },
+        "User logged in successfully."
+      )
+    );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "ok",
-  });
+  const userId = req.user._id;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  user.refreshToken = null;
+
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, "User logged out successfully."));
 });
 
 const deleteUserAccount = asyncHandler(async (req, res) => {
