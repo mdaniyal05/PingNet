@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Otp = require("../models/otp.model");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
@@ -48,11 +49,15 @@ const generateAccessandRefreshToken = async (userId) => {
 };
 
 const userEmailVerification = asyncHandler(async (req, res) => {
-  const emailVerificationStatus = req.emailVerfied;
+  const emailVerification = req.emailVerfied;
 
-  if (!emailVerificationStatus) {
+  if (!emailVerification) {
     throw new ApiError(403, "Email is not verfied.");
   }
+
+  await Otp.deleteOne(emailVerification);
+
+  req.emailVerfied = null;
 
   return res
     .status(200)

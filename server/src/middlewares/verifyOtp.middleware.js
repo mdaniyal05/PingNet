@@ -15,6 +15,17 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
     throw new ApiError(500, "No OTP found for this email.");
   }
 
+  if (userOTP.isBlocked) {
+    const currentTime = new Date();
+    if (currentTime < userOTP.blockUntil) {
+      res.status(403);
+      throw new Error("You are blocked. Try after some time.");
+    } else {
+      userOTP.isBlocked = false;
+      userOTP.otpAttempts = 0;
+    }
+  }
+
   const otpCreatedTime = userOTP.createdAt;
   const currentTime = new Date();
 
@@ -36,7 +47,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
     throw new ApiError(403, "Invalid OTP. Try again.");
   }
 
-  req.emailVerfied = true;
+  req.emailVerfied = email;
 
   next();
 });
