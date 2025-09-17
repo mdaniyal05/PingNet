@@ -47,21 +47,51 @@ const generateAccessandRefreshToken = async (userId) => {
   }
 };
 
+const userEmailVerification = asyncHandler(async (req, res) => {
+  const emailVerificationStatus = req.emailVerfied;
+
+  if (!emailVerificationStatus) {
+    throw new ApiError(403, "Email is not verfied.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Your email is verified."));
+});
+
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, fullname, email, about, dateOfBirth, password } = req.body;
+  const {
+    username,
+    fullname,
+    email,
+    about,
+    dateOfBirth,
+    password,
+    confirmPassword,
+  } = req.body;
 
   if (
-    [username, fullname, email, about, dateOfBirth, password].some(
-      (field) => field?.trim() === ""
-    )
+    [
+      username,
+      fullname,
+      email,
+      about,
+      dateOfBirth,
+      password,
+      confirmPassword,
+    ].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required.");
   }
 
-  const isUserExists = await User.findOne({ $or: [{ email }, { username }] });
+  if (password !== confirmPassword) {
+    throw new ApiError(400, "Password and confirm password does not match.");
+  }
+
+  const isUserExists = await User.findOne(username);
 
   if (isUserExists) {
-    throw new ApiError(409, "User with this email or username already exists.");
+    throw new ApiError(409, "User with this username already exists.");
   }
 
   let avatarLocalPath;
@@ -219,6 +249,7 @@ const refreshToken = asyncHandler(async (req, res) => {
 
 module.exports = {
   registerUser,
+  userEmailVerification,
   loginUser,
   logoutUser,
   deleteUserAccount,
