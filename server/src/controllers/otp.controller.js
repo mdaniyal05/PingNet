@@ -3,6 +3,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const generateOtp = require("../utils/otpGenerator");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
+const sendEmail = require("../utils/sendEmail");
 
 const generateOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -46,6 +47,14 @@ const generateOTP = asyncHandler(async (req, res) => {
   OTP.createdAt = new Date(currentTime);
 
   await OTP.save({ validateBeforeSave: false });
+
+  await sendEmail(
+    email,
+    "Email Verification",
+    OTP,
+    "../html",
+    "otpTemplate.html"
+  );
 
   return res
     .status(200)
