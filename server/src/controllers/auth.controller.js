@@ -163,15 +163,58 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const deleteUserAccount = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "ok",
-  });
+  const userId = req.user._id;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  await User.deleteOne(userId);
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, "User account deleted successfully."));
 });
 
 const refreshToken = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "ok",
-  });
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request.");
+  }
+
+  const decoded = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+  );
+
+  const user = await User.findById(decoded?.payload.userId);
+
+  if (!user) {
+    throw new ApiError(401, "Invalid refresh token.");
+  }
+
+  if (incomingRefreshToken !== user?.refreshToken) {
+    throw new ApiError(401, "Refresh token is expired or used.");
+  }
+
+  const { accessToken, refreshToken } = generateAccessandRefreshToken(user._id);
+
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken: accessToken },
+        "Access token refreshed."
+      )
+    );
 });
 
 module.exports = {
