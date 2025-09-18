@@ -1,7 +1,9 @@
 const express = require("express");
+const { createServer } = require("node:http");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
+const server = createServer(app);
 const {
   notFound,
   errorHandler,
@@ -39,4 +41,4 @@ app.use("/api/v1/otp", otpRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app;
+module.exports = { server, app };
