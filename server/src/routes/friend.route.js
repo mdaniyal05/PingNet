@@ -8,6 +8,7 @@ const {
   removeFriend,
   showFriendList,
   showFriendRequests,
+  searchFriendToAdd,
 } = require("../controllers/friend.controller");
 
 router.post("/send-friend-request", verifyJWT, sendFriendRequest);
@@ -16,5 +17,6 @@ router.post("/reject-friend-request", verifyJWT, rejectFriendRequest);
 router.post("/remove-friend", verifyJWT, removeFriend);
 router.get("/friend-list", verifyJWT, showFriendList);
 router.get("/friend-requests", verifyJWT, showFriendRequests);
+router.get("/search-friend", verifyJWT, searchFriendToAdd);
 
 module.exports = router;

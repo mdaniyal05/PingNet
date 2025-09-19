@@ -1,4 +1,5 @@
 const Friend = require("../models/friend.model");
+const User = require("../models/user.model");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
@@ -126,6 +127,22 @@ const showFriendRequests = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { friendRequests }, "Your friend requests."));
 });
 
+const searchFriendToAdd = asyncHandler(async (req, res) => {
+  const { username } = req.body;
+
+  const user = await User.findOne({ username }).select(
+    "-password -refreshToken"
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User with this username not found.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { user }, "User with this username found."));
+});
+
 module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
@@ -133,4 +150,5 @@ module.exports = {
   removeFriend,
   showFriendRequests,
   showFriendList,
+  searchFriendToAdd,
 };
