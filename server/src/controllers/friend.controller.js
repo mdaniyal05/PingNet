@@ -109,10 +109,28 @@ const showFriendList = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { friendList }, "Your friend list."));
 });
 
+const showFriendRequests = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const friendRequests = await Friend.findOne({ currentUser: userId });
+
+  if (!friendRequests) {
+    throw new ApiError(
+      500,
+      "Something went wrong while fetching friend requests."
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { friendRequests }, "Your friend requests."));
+});
+
 module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
+  showFriendRequests,
   showFriendList,
 };

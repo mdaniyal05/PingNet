@@ -12,6 +12,7 @@ const {
 // Import routers
 const authRouter = require("./routes/auth.route");
 const otpRouter = require("./routes/otp.route");
+const friendRouter = require("./routes/friend.route");
 
 const whiteList = ["http://localhost:3000"];
 
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/otp", otpRouter);
+app.use("/api/v1/friends", friendRouter);
 
 app.use(notFound);
 app.use(errorHandler);
