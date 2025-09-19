@@ -1,0 +1,118 @@
+const Friend = require("../models/friend.model");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiError = require("../utils/apiError");
+const ApiResponse = require("../utils/apiResponse");
+
+const sendFriendRequest = asyncHandler(async (req, res) => {
+  const senderId = req.user._id;
+  const receiverId = req.params._id;
+
+  const sendRequest = await Friend.findOneAndUpdate(
+    { currentUser: receiverId },
+    {
+      $addToSet: { friendRequests: senderId },
+    },
+    { returnOriginal: false }
+  );
+
+  if (!sendRequest) {
+    throw new ApiError(
+      500,
+      "Something went wrong while sending friend request."
+    );
+  }
+
+  return res.status(200).json(new ApiResponse(200, {}, "Friend request sent."));
+});
+
+const acceptFriendRequest = asyncHandler(async (req, res) => {
+  const receiverId = req.user._id;
+  const senderId = req.params._id;
+
+  const acceptRequestSender = await Friend.findOneAndUpdate(
+    { currentUser: senderId },
+    {
+      $addToSet: { friendsList: receiverId },
+    }
+  );
+
+  const acceptRequestReceiver = await Friend.findOneAndUpdate(
+    { currentUser: receiverId },
+    {
+      $addToSet: { friendsList: senderId },
+      $pull: { friendRequests: senderId },
+    }
+  );
+
+  if (!(acceptRequestReceiver && acceptRequestSender)) {
+    throw new ApiError(
+      500,
+      "Something went wrong while accepting friend request."
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Friend request accepted."));
+});
+
+const rejectFriendRequest = asyncHandler(async (req, res) => {
+  const receiverId = req.user._id;
+  const senderId = req.params._id;
+
+  const rejectRequest = await Friend.findOneAndUpdate(
+    { currentUser: receiverId },
+    {
+      $pull: { friendRequests: senderId },
+    }
+  );
+
+  if (!rejectRequest) {
+    throw new ApiError(
+      500,
+      "Something went wrong while rejecting friend request."
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Friend request rejected."));
+});
+
+const removeFriend = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { friendId } = req.body;
+
+  const removeFriend = await Friend.findOneAndUpdate(
+    { currentUser: userId },
+    { $pull: { friendsList: friendId } }
+  );
+
+  if (!removeFriend) {
+    throw new ApiError(500, "Something went wrong while removing friend.");
+  }
+
+  return res.status(200).json(new ApiResponse(200, {}, "Friend removed."));
+});
+
+const showFriendList = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const friendList = await Friend.findOne({ currentUser: userId });
+
+  if (!friendList) {
+    throw new ApiError(500, "Something went wrong while fetching friend list.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { friendList }, "Your friend list."));
+});
+
+module.exports = {
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  removeFriend,
+  showFriendList,
+};

@@ -2,11 +2,17 @@ const mongoose = require("mongoose");
 
 const friendSchema = new mongoose.Schema(
   {
-    friendsWithId: {
+    currentUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
     friendsList: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    friendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

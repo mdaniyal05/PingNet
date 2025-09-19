@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Friend = require("../models/friend.model");
 const Otp = require("../models/otp.model");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
@@ -135,6 +136,17 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw new ApiError(500, "Something went wrong while registering new user.");
+  }
+
+  const friendsFeature = await Friend.create({
+    currentUser: user._id,
+  });
+
+  if (!friendsFeature) {
+    throw new ApiError(
+      500,
+      "Something went wrong while creating friends feature for the new registered user."
+    );
   }
 
   return res
