@@ -11,9 +11,9 @@ const {
   searchFriendToAdd,
 } = require("../controllers/friend.controller");
 
-router.post("/send-friend-request", verifyJWT, sendFriendRequest);
-router.post("/accept-friend-request", verifyJWT, acceptFriendRequest);
-router.post("/reject-friend-request", verifyJWT, rejectFriendRequest);
+router.post("/send-friend-request/:_id", verifyJWT, sendFriendRequest);
+router.post("/accept-friend-request/:_id", verifyJWT, acceptFriendRequest);
+router.post("/reject-friend-request/:_id", verifyJWT, rejectFriendRequest);
 router.post("/remove-friend", verifyJWT, removeFriend);
 router.get("/friend-list", verifyJWT, showFriendList);
 router.get("/friend-requests", verifyJWT, showFriendRequests);
