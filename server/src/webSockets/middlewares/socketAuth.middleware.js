@@ -3,11 +3,12 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const User = require("../models/user.model");
 
-const verifyJWT = asyncHandler(async (req, res, next) => {
+const socketAuth = asyncHandler(async (socket, next) => {
   try {
-    const jwtToken =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
+    const jwtToken = socket.handshake.headers.cookie
+      ?.split("; ")
+      .find((row) => row.startsWith("jwt="))
+      ?.split("=")[1];
 
     if (!jwtToken) {
       throw new ApiError(401, "Unauthorized request.");
@@ -27,7 +28,8 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       throw new ApiError(401, "Invalid access token.");
     }
 
-    req.user = user;
+    socket.user = user;
+    socket.userId = user._id.toString();
 
     next();
   } catch (error) {
@@ -35,4 +37,4 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = verifyJWT;
+module.exports = socketAuth;

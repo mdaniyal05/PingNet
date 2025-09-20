@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/otp", otpRouter);
 app.use("/api/v1/friends", friendRouter);
-app.use("/api/v1/messages");
+app.use("/api/v1/messages", messageRouter);
 
 app.use(notFound);
 app.use(errorHandler);
