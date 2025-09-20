@@ -1,9 +1,18 @@
-const { server } = require("../app");
+const { httpServer } = require("../app");
 const { Server } = require("socket.io");
-const io = new Server(server);
+const socketAuth = require("./middlewares/socketAuth.middleware");
 
-io.on("connection", (socket) => {
-  console.log("a user connected");
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  },
 });
+
+io.use(socketAuth);
+
+const onConnection = (socket) => {};
+
+io.on("connection", onConnection);
 
 module.exports = io;

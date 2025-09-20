@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const { server, app } = require("./app");
+const { httpServer, app } = require("./app");
 const connectDB = require("./db/connectionDB");
 
 const PORT = process.env.PORT || 5000;
@@ -13,7 +13,7 @@ connectDB()
       console.error("Error: ", error);
     });
 
-    server.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(`Server is running at: http://localhost:${PORT}`);
     });
   })
