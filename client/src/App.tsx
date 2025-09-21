@@ -1,7 +1,9 @@
+import { Outlet } from "react-router";
+
 function App() {
   return (
     <>
-      <h1>Chattrix</h1>
+      <Outlet />
     </>
   );
 }

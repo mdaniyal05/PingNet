@@ -59,7 +59,7 @@ export default function LoginForm({
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="../../public/signin-image.jpg"
+              src="/signin-image.jpg"
               alt="signin-image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />

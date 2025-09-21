@@ -21,7 +21,7 @@ export default function RegisterFormPage() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <img
-          src="../../public/signup-image.jpg"
+          src="/signup-image.jpg"
           alt="signup-image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
