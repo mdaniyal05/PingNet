@@ -11,6 +11,7 @@ const io = new Server(httpServer, {
 });
 
 const userStatusHandlers = require("./events/userStatus.event");
+const { sendMessage } = require("./events/message.event");
 
 io.use(socketAuth);
 
@@ -18,6 +19,7 @@ const onlineUsersMap = new UserSocketMap();
 
 const onConnection = (socket) => {
   userStatusHandlers(io, socket, onlineUsersMap);
+  sendMessage(io, socket, onlineUsersMap);
 };
 
 io.on("connection", onConnection);
