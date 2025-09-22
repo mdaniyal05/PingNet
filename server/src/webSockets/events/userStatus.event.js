@@ -1,12 +1,9 @@
-const UserSocketMap = require("../userSocketMap");
-
-module.exports = (io, socket) => {
-  const onlineUsersMap = new UserSocketMap();
-
+module.exports = (io, socket, onlineUsersMap) => {
   const userId = socket.userId;
-  onlineUsersMap.set(userId, socket.id);
 
   const onlineUsers = () => {
+    onlineUsersMap.set(userId, socket.id);
+
     return onlineUsersMap.getKeys();
   };
 
@@ -17,5 +14,5 @@ module.exports = (io, socket) => {
   };
 
   io.emit("status:online", onlineUsers);
-  io.emit("status:offline", offlineUsers);
+  socket.on("disconnect", offlineUsers);
 };

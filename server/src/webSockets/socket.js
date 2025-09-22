@@ -1,6 +1,7 @@
 const { httpServer } = require("../app");
 const { Server } = require("socket.io");
 const socketAuth = require("./middlewares/socketAuth.middleware");
+const UserSocketMap = require("./userSocketMap");
 
 const io = new Server(httpServer, {
   cors: {
@@ -9,15 +10,14 @@ const io = new Server(httpServer, {
   },
 });
 
-const onlineUsers = require("./events/userStatus.event");
-const offlineUsers = require("./events/userStatus.event");
+const userStatusHandlers = require("./events/userStatus.event");
 
 io.use(socketAuth);
 
-const onConnection = (socket) => {
-  onlineUsers(io, socket);
+const onlineUsersMap = new UserSocketMap();
 
-  socket.on("disconnect", offlineUsers);
+const onConnection = (socket) => {
+  userStatusHandlers(io, socket, onlineUsersMap);
 };
 
 io.on("connection", onConnection);
