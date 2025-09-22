@@ -9,9 +9,16 @@ const io = new Server(httpServer, {
   },
 });
 
+const onlineUsers = require("./events/userStatus.event");
+const offlineUsers = require("./events/userStatus.event");
+
 io.use(socketAuth);
 
-const onConnection = (socket) => {};
+const onConnection = (socket) => {
+  onlineUsers(io, socket);
+
+  socket.on("disconnect", offlineUsers);
+};
 
 io.on("connection", onConnection);
 
