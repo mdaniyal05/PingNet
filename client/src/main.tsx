@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store.ts";
 import LoginFormPage from "@/pages/LoginFormPage.tsx";
 import RegisterFormPage from "@/pages/RegisterFormPage.tsx";
+import HomePage from "@/pages/HomePage.tsx";
+import AuthPage from "@/pages/AuthPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -15,12 +17,22 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/login",
-        element: <LoginFormPage />,
+        index: true,
+        element: <HomePage />,
       },
       {
-        path: "/register",
-        element: <RegisterFormPage />,
+        path: "auth",
+        element: <AuthPage />,
+        children: [
+          {
+            path: "login",
+            element: <LoginFormPage />,
+          },
+          {
+            path: "register",
+            element: <RegisterFormPage />,
+          },
+        ],
       },
     ],
   },
