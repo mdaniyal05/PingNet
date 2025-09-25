@@ -1,5 +1,5 @@
 import { MessageSquareText } from "lucide-react";
-import RegisterForm from "@/components/RegisterForm";
+import RegisterForm from "@/features/auth/RegisterForm";
 
 export default function RegisterFormPage() {
   return (
