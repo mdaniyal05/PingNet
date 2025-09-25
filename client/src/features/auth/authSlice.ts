@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import type { AuthState } from "@/types/authTypes";
 
-const initialState: AuthState = { user: null, token: null };
+const initialState: AuthState = { user: null, token: null, isVerified: false };
 
 const slice = createSlice({
   name: "auth",
@@ -21,6 +21,9 @@ const slice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+    },
+    verifyEmail: (state) => {
+      state.isVerified = true;
     },
   },
 });

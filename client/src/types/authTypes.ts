@@ -20,12 +20,12 @@ export interface RegisterRequest {
   fullname: string;
   email: string;
   about: string;
-  dateOfBirth: Date;
-  avatar: string;
+  dateOfBirth: string;
   password: string;
 }
 
 export interface AuthState {
   user: string | null;
   token: string | null;
+  isVerified: boolean;
 }

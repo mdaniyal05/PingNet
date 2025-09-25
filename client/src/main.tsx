@@ -5,9 +5,9 @@ import { RouterProvider } from "react-router/dom";
 import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
-import { store } from "@/redux/store.ts";
-import LoginFormPage from "@/pages/LoginFormPage.tsx";
-import RegisterFormPage from "@/pages/RegisterFormPage.tsx";
+import { store } from "./app/store.ts";
+import LoginFormLayout from "@/layouts/LoginFormLayout.tsx";
+import RegisterFormLayout from "@/layouts/RegisterFormLayout.tsx";
 import HomePage from "@/pages/HomePage.tsx";
 import AuthPage from "@/pages/AuthPage.tsx";
 
@@ -26,11 +26,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: "login",
-            element: <LoginFormPage />,
+            element: <LoginFormLayout />,
           },
           {
             path: "register",
-            element: <RegisterFormPage />,
+            element: <RegisterFormLayout />,
           },
         ],
       },
