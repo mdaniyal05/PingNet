@@ -9,7 +9,7 @@ export const api = createApi({
 
       if (!token) return headers;
 
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
     },
   }),
   endpoints: () => ({}),
