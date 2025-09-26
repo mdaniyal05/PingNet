@@ -5,9 +5,14 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-export default function Otp() {
+type OtpProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+export default function Otp({ value, onChange }: OtpProps) {
   return (
-    <InputOTP maxLength={6}>
+    <InputOTP maxLength={6} value={value} onChange={onChange}>
       <InputOTPGroup>
         <InputOTPSlot index={0} />
         <InputOTPSlot index={1} />

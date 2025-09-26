@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useSendOtpMutation } from "../../app/services/otpApi";
 import { useVerifyEmailMutation } from "../../app/services/authApi";
+import { Link } from "react-router";
 
 export default function VerifyEmail({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState<string>("");
+  const [otp, setOtp] = useState<string>("");
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -25,18 +27,26 @@ export default function VerifyEmail({
     setEmail(event.currentTarget.value);
   };
 
-  const submitHandlerEmail = async () => {
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+  };
+
+  const submitHandlerEmail = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     try {
-      await sendOtp(email).unwrap();
+      event.preventDefault();
+      await sendOtp({ email }).unwrap();
       setIsEmailSent(true);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const submitHandlerOtp = async () => {
+  const submitHandlerOtp = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
-      await verifyEmail(email).unwrap();
+      event.preventDefault();
+      await verifyEmail({ email }).unwrap();
       navigate("/auth/register");
     } catch (error) {
       console.error(error);
@@ -55,7 +65,9 @@ export default function VerifyEmail({
                   Enter 6 digit code sent to your email
                 </p>
               </div>
-              <Otp />
+              <div className="flex items-center justify-center">
+                <Otp value={otp} onChange={handleOtpChange} />
+              </div>
               <Button type="submit" className="w-full">
                 {isLoadingOtp ? "Loading..." : "Verify"}
               </Button>
@@ -91,6 +103,17 @@ export default function VerifyEmail({
               <Button type="submit" className="w-full">
                 {isLoadingEmail ? "Loading..." : "Send Code"}
               </Button>
+              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+                <span className="bg-background text-muted-foreground relative z-10 px-2">
+                  Or
+                </span>
+              </div>
+            </div>
+            <div className="text-center text-sm">
+              Already have an account?{" "}
+              <Link to="/auth/login" className="underline underline-offset-4">
+                Sign in
+              </Link>
             </div>
           </form>
         </CardContent>

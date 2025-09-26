@@ -12,7 +12,7 @@ const generateOTP = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email is required for verification.");
   }
 
-  let OTP = await Otp.findOne(email);
+  let OTP = await Otp.findOne({ email });
 
   if (!OTP) {
     OTP = await Otp.create({ email });
@@ -51,7 +51,7 @@ const generateOTP = asyncHandler(async (req, res) => {
   await sendEmail(
     email,
     "Email Verification",
-    OTP,
+    OTP.otp,
     "../html",
     "otpTemplate.html"
   );
