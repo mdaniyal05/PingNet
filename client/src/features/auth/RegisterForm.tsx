@@ -7,6 +7,7 @@ import { useRegisterMutation } from "../../app/services/authApi";
 import type { RegisterRequest } from "@/types/authTypes";
 import React, { useState } from "react";
 import { DatePicker } from "@/components/ui/date-picker";
+import { Link } from "react-router";
 
 export default function RegisterForm({
   className,
@@ -125,12 +126,12 @@ export default function RegisterForm({
         <div className="grid gap-3">
           <div className="flex items-center">
             <Label htmlFor="password">Confirm Password</Label>
-            <a
-              href="#"
+            <Link
+              to="/auth/forget-password"
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?
-            </a>
+            </Link>
           </div>
           <Input
             id="password"
@@ -151,9 +152,9 @@ export default function RegisterForm({
       </div>
       <div className="text-center text-sm">
         Already have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <Link to="/auth/login" className="underline underline-offset-4">
           Sign in
-        </a>
+        </Link>
       </div>
     </form>
   );

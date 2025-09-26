@@ -10,6 +10,7 @@ import LoginFormLayout from "@/layouts/LoginFormLayout.tsx";
 import RegisterFormLayout from "@/layouts/RegisterFormLayout.tsx";
 import HomePage from "@/pages/HomePage.tsx";
 import AuthPage from "@/pages/AuthPage.tsx";
+import VerifyEmailLayout from "./layouts/VerifyEmailLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: <RegisterFormLayout />,
+          },
+          {
+            path: "verify",
+            element: <VerifyEmailLayout />,
           },
         ],
       },

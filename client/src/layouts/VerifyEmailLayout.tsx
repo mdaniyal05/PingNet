@@ -1,7 +1,7 @@
+import VerifyEmail from "@/features/auth/VerifyEmail";
 import { MessageSquareText } from "lucide-react";
-import RegisterForm from "@/features/auth/RegisterForm";
 
-export default function RegisterFormLayout() {
+export default function VerifyEmailLayout() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -15,7 +15,7 @@ export default function RegisterFormLayout() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <RegisterForm />
+            <VerifyEmail />
           </div>
         </div>
       </div>
