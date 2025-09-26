@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
-import { useAppDispatch } from "@/hooks/store";
+import { useAppDispatch } from "@/hooks/useStore";
 import { isEmailVerified } from "../../features/auth/authSlice";
 import { useSendOtpMutation } from "../../app/services/otpApi";
 import { useVerifyEmailMutation } from "../../app/services/authApi";

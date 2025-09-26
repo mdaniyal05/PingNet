@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useAppSelector } from "@/hooks/store";
+import { useAppSelector } from "@/hooks/useStore";
 import { selectCurrentUser } from "../features/auth/authSlice";
 
 export const useAuth = () => {
