@@ -9,7 +9,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
     throw new ApiError(404, "OTP is required for verification.");
   }
 
-  const userOTP = await Otp.findOne(email);
+  const userOTP = await Otp.findOne({ email });
 
   if (!userOTP) {
     throw new ApiError(500, "No OTP found for this email.");
@@ -26,7 +26,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const otpCreatedTime = userOTP.createdAt;
+  const otpCreatedTime = userOTP.updatedAt;
   const currentTime = new Date();
 
   if (currentTime - otpCreatedTime > 5 * 60 * 1000) {

@@ -56,7 +56,7 @@ const userEmailVerification = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Email is not verfied.");
   }
 
-  await Otp.deleteOne(emailVerification);
+  await Otp.deleteOne({ email: emailVerification });
 
   req.emailVerfied = null;
 

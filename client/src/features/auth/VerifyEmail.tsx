@@ -15,7 +15,7 @@ export default function VerifyEmail({
   ...props
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState<string>("");
-  const [otp, setOtp] = useState<string>("");
+  const [OTP, setOTP] = useState<string>("");
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function VerifyEmail({
   };
 
   const handleOtpChange = (value: string) => {
-    setOtp(value);
+    setOTP(value);
   };
 
   const submitHandlerEmail = async (
@@ -46,7 +46,7 @@ export default function VerifyEmail({
   const submitHandlerOtp = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      await verifyEmail({ email }).unwrap();
+      await verifyEmail({ email, OTP }).unwrap();
       navigate("/auth/register");
     } catch (error) {
       console.error(error);
@@ -66,7 +66,7 @@ export default function VerifyEmail({
                 </p>
               </div>
               <div className="flex items-center justify-center">
-                <Otp value={otp} onChange={handleOtpChange} />
+                <Otp value={OTP} onChange={handleOtpChange} />
               </div>
               <Button type="submit" className="w-full">
                 {isLoadingOtp ? "Loading..." : "Verify"}
