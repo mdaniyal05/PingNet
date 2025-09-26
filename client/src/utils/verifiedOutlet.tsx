@@ -5,7 +5,7 @@ export function VerifiedOutlet() {
   const verified = useEmailVerification();
   const location = useLocation();
 
-  return verified ? (
+  return verified.verifiedEmail ? (
     <Outlet />
   ) : (
     <Navigate to="/auth/verify" state={{ from: location }} />
