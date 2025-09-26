@@ -22,13 +22,13 @@ const slice = createSlice({
       state.user = null;
       state.token = null;
     },
-    verifyEmail: (state) => {
-      state.isVerified = true;
+    isEmailVerified: (state, { payload: verified }: PayloadAction<boolean>) => {
+      state.isVerified = verified;
     },
   },
 });
 
-export const { setCredentials, logout } = slice.actions;
+export const { setCredentials, logout, isEmailVerified } = slice.actions;
 
 export default slice.reducer;
 

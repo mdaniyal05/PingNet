@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/hooks/store";
 import { selectCurrentUser } from "../features/auth/authSlice";
 
 export const useAuth = () => {
-  const user = useSelector(selectCurrentUser);
+  const user = useAppSelector(selectCurrentUser);
 
   return useMemo(() => ({ user }), [user]);
 };

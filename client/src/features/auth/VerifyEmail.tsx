@@ -6,6 +6,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
+import { useAppDispatch } from "@/hooks/store";
+import { isEmailVerified } from "../../features/auth/authSlice";
 import { useSendOtpMutation } from "../../app/services/otpApi";
 import { useVerifyEmailMutation } from "../../app/services/authApi";
 import { Link } from "react-router";
@@ -19,6 +21,7 @@ export default function VerifyEmail({
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [sendOtp, { isLoading: isLoadingOtp }] = useSendOtpMutation();
   const [verifyEmail, { isLoading: isLoadingEmail }] = useVerifyEmailMutation();
@@ -47,6 +50,7 @@ export default function VerifyEmail({
     try {
       event.preventDefault();
       await verifyEmail({ email, OTP }).unwrap();
+      dispatch(isEmailVerified(true));
       navigate("/auth/register");
     } catch (error) {
       console.error(error);

@@ -1,9 +1,4 @@
 import { api } from "../services/api";
-import type {
-  UserResponse,
-  LoginRequest,
-  RegisterRequest,
-} from "@/types/authTypes";
 
 const API_URL: string = import.meta.env.VITE_API_URL;
 
@@ -17,14 +12,14 @@ if (import.meta.env.PROD) {
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<UserResponse, RegisterRequest>({
+    register: builder.mutation({
       query: (payload) => ({
         url: `${AUTH_URL}/register`,
         method: "POST",
         body: payload,
       }),
     }),
-    login: builder.mutation<UserResponse, LoginRequest>({
+    login: builder.mutation({
       query: (payload) => ({
         url: `${AUTH_URL}/login`,
         method: "POST",
