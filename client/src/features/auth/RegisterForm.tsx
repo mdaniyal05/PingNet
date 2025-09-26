@@ -8,6 +8,7 @@ import type { RegisterRequest } from "@/types/authTypes";
 import React, { useState } from "react";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Link } from "react-router";
+import { InputFile } from "@/components/InputFile";
 
 export default function RegisterForm({
   className,
