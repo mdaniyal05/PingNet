@@ -68,12 +68,15 @@ const registerUser = asyncHandler(async (req, res) => {
   const {
     username,
     fullname,
-    email,
     about,
     dateOfBirth,
+    email,
     password,
     confirmPassword,
   } = req.body;
+
+  console.log(req.body);
+  
 
   if (
     [

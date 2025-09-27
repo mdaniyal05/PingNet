@@ -20,8 +20,8 @@ export interface RegisterRequest {
   fullname: string;
   email: string;
   about: string;
-  dateOfBirth: string;
   password: string;
+  confirmPassword: string;
 }
 
 export interface AuthState {

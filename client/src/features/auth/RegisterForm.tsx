@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import { useRegisterMutation } from "../../app/services/authApi";
 import type { RegisterRequest } from "@/types/authTypes";
 import React, { useState } from "react";
-import { DatePicker } from "@/components/ui/date-picker";
+import { DatePicker } from "@/components/DatePicker";
 import { Link } from "react-router";
 import { InputFile } from "@/components/InputFile";
 import useUploadFile from "@/hooks/useUploadFIle";
@@ -16,16 +16,17 @@ export default function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
-  const [isAvatarUploaded, setIsAvatarUploaded] = useState<boolean>(false);
+  const [isUserInfoSent, setisUserInfoSent] = useState<boolean>(false);
 
   const [formState, setFormState] = useState<RegisterRequest>({
     username: "",
     fullname: "",
     email: "",
     about: "",
-    dateOfBirth: "",
     password: "",
+    confirmPassword: "",
   });
 
   const navigate = useNavigate();
@@ -40,6 +41,10 @@ export default function RegisterForm({
     }
   };
 
+  const handleDateChange = (value: Date | undefined) => {
+    setDate(value);
+  };
+
   const handleChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) =>
@@ -50,8 +55,8 @@ export default function RegisterForm({
   ) => {
     try {
       event.preventDefault();
-      await register(formState).unwrap();
-      navigate("/auth/login");
+      await register({ ...formState, dateOfBirth: date }).unwrap();
+      setisUserInfoSent(true);
     } catch (error) {
       console.error(error);
     }
@@ -63,13 +68,45 @@ export default function RegisterForm({
     try {
       event.preventDefault();
       await handleFileUpload();
-      setIsAvatarUploaded(true);
+      navigate("/auth/login");
     } catch (error) {
       console.error(error);
     }
   };
 
-  return isAvatarUploaded ? (
+  return isUserInfoSent ? (
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+      onSubmit={submitHandlerAvatar}
+    >
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-bold">Upload your avatar</h1>
+        <p className="text-muted-foreground text-sm text-balance">
+          Upload your avatar below to proceed further
+        </p>
+      </div>
+      <div className="grid gap-6">
+        <div className="grid gap-3">
+          <InputFile onChange={handleFileChange} />
+        </div>
+        {status === "uploading" && <Progress value={uploadProgress} />}
+        (status !== "uploading" &&{" "}
+        <Button type="submit" className="w-full">
+          Upload
+        </Button>
+        )
+        {status === "success" && (
+          <p className="text-sm text-green-800">File uploaded successfully!</p>
+        )}
+        {status === "error" && (
+          <p className="text-sm text-red-800">
+            Upload failed. Please try again.
+          </p>
+        )}
+      </div>
+    </form>
+  ) : (
     <form
       className={cn("flex flex-col gap-6", className)}
       {...props}
@@ -116,7 +153,7 @@ export default function RegisterForm({
           />
         </div>
         <div className="grid gap-3">
-          <DatePicker />
+          <DatePicker value={date} onChange={handleDateChange} />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
@@ -152,8 +189,8 @@ export default function RegisterForm({
             </Link>
           </div>
           <Input
-            id="password"
-            name="password"
+            id="confirmPassword"
+            name="confirmPassword"
             type="password"
             onChange={handleChange}
             required
@@ -162,38 +199,6 @@ export default function RegisterForm({
         <Button type="submit" className="w-full">
           {isLoading ? "Loading..." : "Register"}
         </Button>
-      </div>
-    </form>
-  ) : (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      {...props}
-      onSubmit={submitHandlerAvatar}
-    >
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Upload your avatar</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Upload your avatar below to proceed further
-        </p>
-      </div>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <InputFile onChange={handleFileChange} />
-        </div>
-        {status === "uploading" && <Progress value={uploadProgress} />}
-        (status !== "uploading" &&{" "}
-        <Button type="submit" className="w-full">
-          Upload
-        </Button>
-        )
-        {status === "success" && (
-          <p className="text-sm text-green-800">File uploaded successfully!</p>
-        )}
-        {status === "error" && (
-          <p className="text-sm text-red-800">
-            Upload failed. Please try again.
-          </p>
-        )}
       </div>
     </form>
   );
