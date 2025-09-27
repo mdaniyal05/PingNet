@@ -1,9 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import type { AuthState } from "@/types/authTypes";
+import type { AuthState, User } from "@/types/authTypes";
 
-const initialState: AuthState = { user: null, token: null, isVerified: false };
+const initialState: AuthState = {
+  user: null,
+  token: null,
+  isVerified: false,
+  verifiedEmail: "",
+};
 
 const slice = createSlice({
   name: "auth",
@@ -11,9 +16,7 @@ const slice = createSlice({
   reducers: {
     setCredentials: (
       state,
-      {
-        payload: { user, token },
-      }: PayloadAction<{ user: string; token: string }>
+      { payload: { user, token } }: PayloadAction<{ user: User; token: string }>
     ) => {
       state.user = user;
       state.token = token;
@@ -22,8 +25,14 @@ const slice = createSlice({
       state.user = null;
       state.token = null;
     },
-    isEmailVerified: (state, { payload: verified }: PayloadAction<boolean>) => {
+    isEmailVerified: (
+      state,
+      {
+        payload: { verified, email },
+      }: PayloadAction<{ verified: boolean; email: string }>
+    ) => {
       state.isVerified = verified;
+      state.verifiedEmail = email;
     },
   },
 });

@@ -1,4 +1,5 @@
 const Otp = require("../models/otp.model");
+const User = require("../models/user.model");
 const asyncHandler = require("../utils/asyncHandler");
 const generateOtp = require("../utils/otpGenerator");
 const ApiError = require("../utils/apiError");
@@ -7,6 +8,12 @@ const sendEmail = require("../utils/sendEmail");
 
 const generateOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    throw new ApiError(400, "User already exists with this email.");
+  }
 
   if (!email) {
     throw new ApiError(400, "Email is required for verification.");

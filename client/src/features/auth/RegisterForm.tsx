@@ -11,6 +11,7 @@ import { Link } from "react-router";
 import { InputFile } from "@/components/InputFile";
 import useUploadFile from "@/hooks/useUploadFIle";
 import { Progress } from "@/components/ui/progress";
+import { useAppSelector } from "@/hooks/useStore";
 
 export default function RegisterForm({
   className,
@@ -20,10 +21,12 @@ export default function RegisterForm({
   const [file, setFile] = useState<File | null>(null);
   const [isUserInfoSent, setisUserInfoSent] = useState<boolean>(false);
 
+  const verifiedEmail = useAppSelector((state) => state.auth.verifiedEmail);
+
   const [formState, setFormState] = useState<RegisterRequest>({
     username: "",
     fullname: "",
-    email: "",
+    email: verifiedEmail,
     about: "",
     password: "",
     confirmPassword: "",
@@ -58,7 +61,11 @@ export default function RegisterForm({
   ) => {
     try {
       event.preventDefault();
-      await register({ ...formState, dateOfBirth: date }).unwrap();
+      const response = await register({
+        ...formState,
+        dateOfBirth: date,
+      }).unwrap();
+      console.log(response);
       setisUserInfoSent(true);
     } catch (error) {
       console.error(error);
@@ -70,7 +77,8 @@ export default function RegisterForm({
   ) => {
     try {
       event.preventDefault();
-      await handleFileUpload();
+      const response = await handleFileUpload();
+      console.log(response);
       navigate("/auth/login");
     } catch (error) {
       console.error(error);

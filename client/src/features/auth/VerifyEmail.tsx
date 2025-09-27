@@ -50,7 +50,7 @@ export default function VerifyEmail({
     try {
       event.preventDefault();
       await verifyEmail({ email, OTP }).unwrap();
-      dispatch(isEmailVerified(true));
+      dispatch(isEmailVerified({ verified: true, email: email }));
       navigate("/auth/register");
     } catch (error) {
       console.error(error);

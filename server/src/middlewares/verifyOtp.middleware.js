@@ -1,9 +1,16 @@
 const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
+const User = require("../models/user.model");
 const Otp = require("../models/otp.model");
 
 const verifyOTP = asyncHandler(async (req, res, next) => {
   const { email, OTP } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    throw new ApiError(400, "User already exists with this email.");
+  }
 
   if (!OTP) {
     throw new ApiError(404, "OTP is required for verification.");
