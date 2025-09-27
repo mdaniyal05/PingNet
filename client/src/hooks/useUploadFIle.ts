@@ -20,7 +20,7 @@ export default function useUploadFile(file: uploadFile) {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/v1/user/upload-avatar",
+        "http://localhost:8080/api/v1/users/user/upload-avatar",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

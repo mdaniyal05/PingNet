@@ -4,7 +4,6 @@ const Otp = require("../models/otp.model");
 const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
-const uploadFileOnCloudinary = require("../service/cloudinary");
 const generateJwtToken = require("../utils/generateJwtToken");
 
 const cookieOptions = {
@@ -94,30 +93,10 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password and confirm password does not match.");
   }
 
-  const isUserExists = await User.findOne(username);
+  const isUserExists = await User.findOne({ username });
 
   if (isUserExists) {
     throw new ApiError(409, "User with this username already exists.");
-  }
-
-  let avatarLocalPath;
-
-  if (
-    req.files &&
-    Array.isArray(req.files.avatar) &&
-    req.files.avatar.length > 0
-  ) {
-    avatarLocalPath = req.files?.avatar[0]?.path;
-  }
-
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required.");
-  }
-
-  const avatar = await uploadFileOnCloudinary(avatarLocalPath);
-
-  if (!avatar) {
-    throw new ApiError(400, "Avatar file is required.");
   }
 
   const newUser = await User.create({
@@ -126,7 +105,6 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     about,
     dateOfBirth,
-    avatar: avatar.url,
     password,
   });
 

@@ -11,6 +11,7 @@ const {
 
 // Import routers
 const authRouter = require("./routes/auth.route");
+const userRouter = require("./routes/user.route");
 const otpRouter = require("./routes/otp.route");
 const friendRouter = require("./routes/friend.route");
 const messageRouter = require("./routes/message.route");
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/otp", otpRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/friends", friendRouter);
 app.use("/api/v1/messages", messageRouter);
 

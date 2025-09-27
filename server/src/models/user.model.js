@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      required: [true, "Avatar is required."],
     },
     password: {
       type: String,

@@ -11,12 +11,20 @@ const {
   searchFriendToAdd,
 } = require("../controllers/friend.controller");
 
-router.post("/send-friend-request/:_id", verifyJWT, sendFriendRequest);
-router.post("/accept-friend-request/:_id", verifyJWT, acceptFriendRequest);
-router.post("/reject-friend-request/:_id", verifyJWT, rejectFriendRequest);
-router.post("/remove-friend", verifyJWT, removeFriend);
-router.get("/friend-list", verifyJWT, showFriendList);
-router.get("/friend-requests", verifyJWT, showFriendRequests);
-router.get("/search-friend", verifyJWT, searchFriendToAdd);
+router.post("/friend/send-friend-request/:_id", verifyJWT, sendFriendRequest);
+router.post(
+  "/friend/accept-friend-request/:_id",
+  verifyJWT,
+  acceptFriendRequest
+);
+router.post(
+  "/friend/reject-friend-request/:_id",
+  verifyJWT,
+  rejectFriendRequest
+);
+router.post("/friend/remove-friend", verifyJWT, removeFriend);
+router.get("/friend/friend-list", verifyJWT, showFriendList);
+router.get("/friend/friend-requests", verifyJWT, showFriendRequests);
+router.get("/friend/search-friend", verifyJWT, searchFriendToAdd);
 
 module.exports = router;

@@ -7,9 +7,9 @@ const {
 } = require("../controllers/message.controller");
 const upload = require("../middlewares/multer.middleware");
 
-router.get("/:_id", verifyJWT, getMessages);
+router.get("/message/:_id", verifyJWT, getMessages);
 router.post(
-  "/send-message/:_id",
+  "/message/send-message/:_id",
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "video", maxCount: 1 },
