@@ -5,7 +5,7 @@ type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type uploadFile = File | null;
 
-export default function useUploadFile(file: uploadFile) {
+export default function useUploadFile(file: uploadFile, email: string) {
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -16,7 +16,8 @@ export default function useUploadFile(file: uploadFile) {
     setUploadProgress(0);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("avatar", file);
+    formData.append("email", email);
 
     try {
       await axios.post(

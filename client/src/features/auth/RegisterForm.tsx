@@ -33,7 +33,10 @@ export default function RegisterForm({
 
   const [register, { isLoading }] = useRegisterMutation();
 
-  const { handleFileUpload, status, uploadProgress } = useUploadFile(file);
+  const { handleFileUpload, status, uploadProgress } = useUploadFile(
+    file,
+    formState.email
+  );
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -91,11 +94,11 @@ export default function RegisterForm({
           <InputFile onChange={handleFileChange} />
         </div>
         {status === "uploading" && <Progress value={uploadProgress} />}
-        (status !== "uploading" &&{" "}
-        <Button type="submit" className="w-full">
-          Upload
-        </Button>
-        )
+        {status !== "uploading" && (
+          <Button type="submit" className="w-full">
+            Upload
+          </Button>
+        )}
         {status === "success" && (
           <p className="text-sm text-green-800">File uploaded successfully!</p>
         )}
