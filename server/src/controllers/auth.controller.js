@@ -14,7 +14,7 @@ const cookieOptions = {
 
 const generateAccessandRefreshToken = async (userId) => {
   try {
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId);
 
     if (!user) {
       throw new ApiError(404, "User not found.");
@@ -74,9 +74,6 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     confirmPassword,
   } = req.body;
-
-  console.log(req.body);
-  
 
   if (
     [
@@ -142,9 +139,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email or username is required.");
   }
 
-  const user = await User.findOne({ $or: [{ email }, { username }] }).select(
-    "-password -refreshToken"
-  );
+  const user = await User.findOne({ $or: [{ email }, { username }] });
 
   if (!user) {
     throw new ApiError(404, "User not found.");
@@ -156,7 +151,9 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid password.");
   }
 
-  const { accessToken, refreshToken } = generateAccessandRefreshToken(user._id);
+  const { refreshToken, accessToken } = await generateAccessandRefreshToken(
+    user._id
+  );
 
   return res
     .status(200)
