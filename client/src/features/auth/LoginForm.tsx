@@ -38,7 +38,7 @@ export default function LoginForm({
       event.preventDefault();
       const response = await login({ ...formState });
       console.log(response);
-      // navigate("/chat");
+      navigate("/chat");
     } catch (error) {
       console.error(error);
     }
