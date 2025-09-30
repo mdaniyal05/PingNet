@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../app/services/authApi";
-import type { LoginRequest } from "@/types/authTypes";
+import type { LoginRequest, User } from "@/types/authTypes";
 import React, { useState } from "react";
+import { useAppDispatch } from "@/hooks/useStore";
+import { setCredentials } from "../../features/auth/authSlice";
 
 type loginWithtype = "email" | "username";
 
@@ -15,6 +17,13 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [loginWith, setLoginWith] = useState<loginWithtype>("email");
+  const [token, setToken] = useState<string>("");
+
+  const [user, setUser] = useState<User>({
+    username: "",
+    email: "",
+    fullname: "",
+  });
 
   const [formState, setFormState] = useState<LoginRequest>({
     username: "",
@@ -23,6 +32,7 @@ export default function LoginForm({
   });
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -36,7 +46,18 @@ export default function LoginForm({
   ) => {
     try {
       event.preventDefault();
+
       const response = await login({ ...formState });
+
+      setUser({
+        username: response.data.username,
+        email: response.data.email,
+        fullname: response.data.fullname,
+      });
+
+      setToken(response.data.accessToken);
+
+      dispatch(setCredentials({ user, token }));
       console.log(response);
       navigate("/chat");
     } catch (error) {
