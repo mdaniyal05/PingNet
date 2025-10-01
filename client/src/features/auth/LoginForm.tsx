@@ -8,7 +8,7 @@ import { useLoginMutation } from "../../app/services/authApi";
 import type { LoginRequest, User } from "@/types/authTypes";
 import React, { useState } from "react";
 import { useAppDispatch } from "@/hooks/useStore";
-import { setCredentials } from "../../features/auth/authSlice";
+import { setCredentials, setToken } from "../../features/auth/authSlice";
 
 type loginWithtype = "email" | "username";
 
@@ -17,7 +17,7 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [loginWith, setLoginWith] = useState<loginWithtype>("email");
-  const [token, setToken] = useState<string>("");
+  const [jwtToken, setJwtToken] = useState<string>("");
 
   const [user, setUser] = useState<User>({
     username: "",
@@ -49,16 +49,19 @@ export default function LoginForm({
 
       const response = await login({ ...formState });
 
+      console.log(response);
+
       setUser({
         username: response.data.username,
         email: response.data.email,
         fullname: response.data.fullname,
       });
 
-      setToken(response.data.accessToken);
+      setJwtToken(response.data.accessToken);
 
-      dispatch(setCredentials({ user, token }));
-      console.log(response);
+      dispatch(setCredentials(user));
+      dispatch(setToken(jwtToken));
+
       navigate("/chat");
     } catch (error) {
       console.error(error);

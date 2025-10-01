@@ -14,11 +14,10 @@ const slice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    setCredentials: (
-      state,
-      { payload: { user, token } }: PayloadAction<{ user: User; token: string }>
-    ) => {
+    setCredentials: (state, { payload: user }: PayloadAction<User | null>) => {
       state.user = user;
+    },
+    setToken: (state, { payload: token }: PayloadAction<string | null>) => {
       state.token = token;
     },
     logout: (state) => {
@@ -37,7 +36,8 @@ const slice = createSlice({
   },
 });
 
-export const { setCredentials, logout, isEmailVerified } = slice.actions;
+export const { setCredentials, setToken, logout, isEmailVerified } =
+  slice.actions;
 
 export default slice.reducer;
 
