@@ -17,13 +17,6 @@ export default function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [loginWith, setLoginWith] = useState<loginWithtype>("email");
-  const [jwtToken, setJwtToken] = useState<string>("");
-
-  const [user, setUser] = useState<User>({
-    username: "",
-    email: "",
-    fullname: "",
-  });
 
   const [formState, setFormState] = useState<LoginRequest>({
     username: "",
@@ -51,16 +44,23 @@ export default function LoginForm({
 
       console.log(response);
 
-      setUser({
-        username: response.data.username,
-        email: response.data.email,
-        fullname: response.data.fullname,
-      });
+      let user: User;
+      let token: string;
 
-      setJwtToken(response.data.accessToken);
+      if (response) {
+        const data = response.data.data;
 
-      dispatch(setCredentials(user));
-      dispatch(setToken(jwtToken));
+        user = {
+          username: data.username,
+          email: data.email,
+          fullname: data.fullname,
+        };
+
+        token = response.data.data.accessToken;
+
+        dispatch(setCredentials(user));
+        dispatch(setToken(token));
+      }
 
       navigate("/chat");
     } catch (error) {
