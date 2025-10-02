@@ -1,2 +1,2 @@
-# Chattrix
-Chat App.
+# PingNet
+Messenger
