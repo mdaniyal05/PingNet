@@ -77,7 +77,7 @@ export default function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Chattrix account
+                  Login to your PingNet account
                 </p>
               </div>
               <div className="grid gap-3">
@@ -153,7 +153,7 @@ export default function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Chattrix account
+                  Login to your PingNet account
                 </p>
               </div>
               <div className="grid gap-3">

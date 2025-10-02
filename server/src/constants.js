@@ -1,4 +1,4 @@
-const DB_NAME = "chattrix";
+const DB_NAME = "pingnet";
 
 module.exports = {
   DB_NAME,

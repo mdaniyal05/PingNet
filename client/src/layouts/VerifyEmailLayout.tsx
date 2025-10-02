@@ -10,7 +10,7 @@ export default function VerifyEmailLayout() {
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <MessageSquareText className="size-4" />
             </div>
-            Chattrix
+            PingNet
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
