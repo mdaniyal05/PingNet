@@ -3,16 +3,27 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAppDispatch } from "@/hooks/useStore";
-import { connectSocket } from "./socketSlice";
 import { useEffect } from "react";
+import { socket } from "./socket";
 
 export default function ChatBox() {
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    dispatch(connectSocket());
-  }, [dispatch]);
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Connected to server:", socket.id);
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err.message);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <Card className="w-full max-w-md h-[500px] flex flex-col">

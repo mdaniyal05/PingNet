@@ -7,7 +7,7 @@ const socketAuth = asyncSocketHandler(async (socket, next) => {
   try {
     const jwtToken = socket.handshake.headers.cookie
       ?.split("; ")
-      .find((row) => row.startsWith("jwt="))
+      .find((row) => row.startsWith("accessToken="))
       ?.split("=")[1];
 
     if (!jwtToken) {
