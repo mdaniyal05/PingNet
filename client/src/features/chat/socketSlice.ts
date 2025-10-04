@@ -5,6 +5,7 @@ import type { SocketIO, SocketState } from "@/types/socketTypes";
 
 const initialState: SocketState = {
   socket: null,
+  onlineFriends: [],
 };
 
 const socketSlice = createSlice({
@@ -18,6 +19,11 @@ const socketSlice = createSlice({
     disconnectSocket: (state) => {
       state.socket?.disconnect();
       Object.assign(state, { socket: null });
+    },
+    onlineFriendsList: (state) => {
+      socket.on("status:online", (onlineUsers) => {
+        state.onlineFriends = onlineUsers;
+      });
     },
   },
 });

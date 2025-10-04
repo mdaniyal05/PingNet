@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 
 export type SocketState = {
   socket: SocketIO | null;
+  onlineFriends: string[];
 };
 
 export type MessagePayload = {
