@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
-const asyncHandler = require("../utils/asyncHandler");
-const ApiError = require("../utils/apiError");
-const User = require("../models/user.model");
+const asyncSocketHandler = require("../utils/asyncSocketHandler");
+const ApiError = require("../../utils/apiError");
+const User = require("../../models/user.model");
 
-const socketAuth = asyncHandler(async (socket, next) => {
+const socketAuth = asyncSocketHandler(async (socket, next) => {
   try {
     const jwtToken = socket.handshake.headers.cookie
       ?.split("; ")

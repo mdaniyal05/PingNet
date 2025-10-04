@@ -3,8 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAppDispatch } from "@/hooks/useStore";
+import { connectSocket } from "./socketSlice";
+import { useEffect } from "react";
 
 export default function ChatBox() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(connectSocket());
+  }, [dispatch]);
+
   return (
     <Card className="w-full max-w-md h-[500px] flex flex-col">
       <CardHeader className="font-bold text-lg">Chat</CardHeader>

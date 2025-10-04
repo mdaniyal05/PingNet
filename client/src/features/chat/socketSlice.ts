@@ -28,7 +28,8 @@ const socketSlice = createSlice({
   },
 });
 
-export const { connectSocket, disconnectSocket } = socketSlice.actions;
+export const { connectSocket, disconnectSocket, onlineFriendsList } =
+  socketSlice.actions;
 
 export const selectSocket = (state: RootState) => state.socket.socket;
 
