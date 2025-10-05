@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import ChatBox from "@/features/chat/ChatBox";
+import ChatContainer from "@/features/chat/ChatContainer";
 
 export default function ChatLayout() {
   return (
@@ -41,9 +41,7 @@ export default function ChatLayout() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min">
-            <ChatBox />
-          </div>
+          <ChatContainer />
         </div>
       </SidebarInset>
     </SidebarProvider>

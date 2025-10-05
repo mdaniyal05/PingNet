@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import NoChatSelected from "./NoChatSelected";
 import { socket } from "./socket";
+import { useEffect } from "react";
 
-export default function ChatBox() {
+export default function ChatContainer() {
   useEffect(() => {
     socket.connect();
 
@@ -20,5 +21,9 @@ export default function ChatBox() {
     };
   }, []);
 
-  return <div>Chat box</div>;
+  return (
+    <>
+      <NoChatSelected />
+    </>
+  );
 }
