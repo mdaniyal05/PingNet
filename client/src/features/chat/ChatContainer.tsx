@@ -1,4 +1,3 @@
-import NoChatSelected from "./NoChatSelected";
 import { socket } from "./socket";
 import { useEffect } from "react";
 
@@ -23,7 +22,7 @@ export default function ChatContainer() {
 
   return (
     <>
-      <NoChatSelected />
+      <div>Chat Container</div>
     </>
   );
 }
