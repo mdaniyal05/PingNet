@@ -3,8 +3,10 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import type { AuthState, User } from "@/types/authTypes";
 
+const storedUser = localStorage.getItem("user");
+
 const initialState: AuthState = {
-  user: null,
+  user: storedUser ? (JSON.parse(storedUser) as User) : null,
   token: null,
   isVerified: false,
   verifiedEmail: "",
@@ -16,6 +18,12 @@ const slice = createSlice({
   reducers: {
     setCredentials: (state, { payload: user }: PayloadAction<User | null>) => {
       state.user = user;
+
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("user");
+      }
     },
     setToken: (state, { payload: token }: PayloadAction<string | null>) => {
       state.token = token;
@@ -32,6 +40,7 @@ const slice = createSlice({
     ) => {
       state.isVerified = verified;
       state.verifiedEmail = email;
+      localStorage.removeItem("user");
     },
   },
 });

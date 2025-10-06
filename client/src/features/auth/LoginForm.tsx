@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../app/services/authApi";
 import type { LoginRequest, User } from "@/types/authTypes";
-import React, { useState } from "react";
-import { useAppDispatch } from "@/hooks/useStore";
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { setCredentials, setToken } from "../../features/auth/authSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 type loginWithtype = "email" | "username";
 
@@ -28,6 +29,14 @@ export default function LoginForm({
   const dispatch = useAppDispatch();
 
   const [login, { isLoading }] = useLoginMutation();
+
+  const user = useAppSelector(selectCurrentUser);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/chat");
+    }
+  }, [navigate, user]);
 
   const handleChange = ({
     target: { name, value },

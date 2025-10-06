@@ -11,7 +11,7 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),
-  devTools: import.meta.env.PROD ? true : false,
+  devTools: import.meta.env.PROD ? false : true,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
