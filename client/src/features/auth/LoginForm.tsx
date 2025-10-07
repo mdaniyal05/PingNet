@@ -34,7 +34,7 @@ export default function LoginForm({
 
   useEffect(() => {
     if (user) {
-      navigate("/chat");
+      navigate("/sidebar");
     }
   }, [navigate, user]);
 

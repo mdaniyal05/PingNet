@@ -13,7 +13,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import NoChatSelected from "@/features/chat/NoChatSelected";
+import ChatContainer from "@/features/chat/ChatContainer";
+// import NoChatSelected from "@/features/chat/NoChatSelected";
 
 export default function SideBarLayout() {
   return (
@@ -26,7 +27,7 @@ export default function SideBarLayout() {
     >
       <AppSidebar />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
+        <header className="bg-background top-0 flex shrink-0 items-center gap-2 border-b p-4">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
@@ -44,7 +45,8 @@ export default function SideBarLayout() {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <NoChatSelected />
+        {/* <NoChatSelected /> */}
+        <ChatContainer />
       </SidebarInset>
     </SidebarProvider>
   );

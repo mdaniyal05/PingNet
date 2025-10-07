@@ -5,6 +5,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
 const generateJwtToken = require("../utils/generateJwtToken");
+const jwt = require("jsonwebtoken");
 
 const cookieOptions = {
   httpOnly: true,
@@ -52,6 +53,7 @@ const userEmailVerification = asyncHandler(async (req, res) => {
   const emailVerification = req.emailVerfied;
 
   if (!emailVerification) {
+    res.status(403);
     throw new ApiError(403, "Email is not verfied.");
   }
 
@@ -90,12 +92,14 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   if (password !== confirmPassword) {
+    res.status(400);
     throw new ApiError(400, "Password and confirm password does not match.");
   }
 
   const isUserExists = await User.findOne({ username });
 
   if (isUserExists) {
+    res.status(409);
     throw new ApiError(409, "User with this username already exists.");
   }
 
@@ -113,6 +117,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!user) {
+    res.status(500);
     throw new ApiError(500, "Something went wrong while registering new user.");
   }
 
@@ -121,6 +126,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (!friendsFeature) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while creating friends feature for the new registered user."
@@ -136,18 +142,21 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
 
   if (!(email || username)) {
+    res.status(400);
     throw new ApiError(400, "Email or username is required.");
   }
 
   const user = await User.findOne({ $or: [{ email }, { username }] });
 
   if (!user) {
+    res.status(404);
     throw new ApiError(404, "User not found.");
   }
 
   const isPasswordCorrect = await user.isPasswordCorrect(password);
 
   if (!isPasswordCorrect) {
+    res.status(401);
     throw new ApiError(401, "Invalid password.");
   }
 
@@ -178,6 +187,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
+    res.status(404);
     throw new ApiError(404, "User not found.");
   }
 
@@ -197,6 +207,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
+    res.status(404);
     throw new ApiError(404, "User not found.");
   }
 
@@ -214,6 +225,7 @@ const refreshToken = asyncHandler(async (req, res) => {
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
+    res.status(401);
     throw new ApiError(401, "Unauthorized request.");
   }
 
@@ -225,10 +237,12 @@ const refreshToken = asyncHandler(async (req, res) => {
   const user = await User.findById(decoded?.payload.userId);
 
   if (!user) {
+    res.status(401);
     throw new ApiError(401, "Invalid refresh token.");
   }
 
   if (incomingRefreshToken !== user?.refreshToken) {
+    res.status(401);
     throw new ApiError(401, "Refresh token is expired or used.");
   }
 

@@ -29,7 +29,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         console.log("Sending refresh token...");
 
         const refreshResult = await baseQuery(
-          "/refresh-token",
+          { url: "/api/v1/auth/refresh-token", method: "POST" },
           api,
           extraOptions
         );

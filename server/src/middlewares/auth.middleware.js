@@ -10,12 +10,14 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!jwtToken) {
+      res.status(401);
       throw new ApiError(401, "Unauthorized request.");
     }
 
     const decoded = jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
 
     if (!decoded) {
+      res.status(401);
       throw new ApiError(401, "Invalid access token.");
     }
 
@@ -24,6 +26,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     );
 
     if (!user) {
+      res.status(401);
       throw new ApiError(401, "Invalid access token.");
     }
 
@@ -31,6 +34,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
+    res.status(401);
     throw new ApiError(401, "Not authorized. Token failed.");
   }
 });
