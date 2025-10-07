@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
-import { useRegisterMutation } from "../../app/services/authApi";
+import { useRegisterMutation } from "../../app/api/authApi";
 import type { RegisterRequest } from "@/types/authTypes";
 import React, { useState } from "react";
 import { DatePicker } from "@/components/DatePicker";

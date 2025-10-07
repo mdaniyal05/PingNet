@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router";
-import { useLoginMutation } from "../../app/services/authApi";
+import { useLoginMutation } from "../../app/api/authApi";
 import type { LoginRequest, User } from "@/types/authTypes";
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

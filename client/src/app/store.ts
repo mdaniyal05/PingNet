@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { api } from "./services/api";
+import { api } from "./api/api";
 import authReducer from "../features/auth/authSlice";
 import socketReducer from "../features/chat/socketSlice";
 

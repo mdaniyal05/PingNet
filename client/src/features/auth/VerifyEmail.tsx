@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "@/hooks/useStore";
 import { isEmailVerified } from "../../features/auth/authSlice";
-import { useSendOtpMutation } from "../../app/services/otpApi";
-import { useVerifyEmailMutation } from "../../app/services/authApi";
+import { useSendOtpMutation } from "../../app/api/otpApi";
+import { useVerifyEmailMutation } from "../../app/api/authApi";
 import { Link } from "react-router";
 
 export default function VerifyEmail({
