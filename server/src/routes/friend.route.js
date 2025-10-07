@@ -22,7 +22,7 @@ router.post(
   verifyJWT,
   rejectFriendRequest
 );
-router.post("/friend/remove-friend", verifyJWT, removeFriend);
+router.post("/friend/remove-friend/:_id", verifyJWT, removeFriend);
 router.get("/friend/friend-list", verifyJWT, showFriendList);
 router.get("/friend/friend-requests", verifyJWT, showFriendRequests);
 router.get("/friend/search-friend", verifyJWT, searchFriendToAdd);

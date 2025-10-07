@@ -82,7 +82,7 @@ const rejectFriendRequest = asyncHandler(async (req, res) => {
 
 const removeFriend = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const { friendId } = req.body;
+  const friendId = req.params._id;
 
   const removeFriend = await Friend.findOneAndUpdate(
     { currentUser: userId },
