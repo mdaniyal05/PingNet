@@ -51,7 +51,7 @@ export default function SearchFriend() {
     try {
       setFrientFound(false);
 
-      const response = await searchFriend({ username: searchPerson });
+      const response = await searchFriend({ username: searchPerson }).unwrap();
 
       if (response) {
         if (response.error) setFrientFound(false);
@@ -60,12 +60,14 @@ export default function SearchFriend() {
 
       const data = response.data;
 
+      console.log(data);
+
       if (data) {
         setFriendData({
-          _id: data?.data?.user?._id,
-          fullname: data?.data?.user?.fullname,
-          username: data?.data?.user?.username,
-          avatar: data?.data?.user?.avatar,
+          _id: data?.user?._id,
+          fullname: data?.user?.fullname,
+          username: data?.user?.username,
+          avatar: data?.user?.avatar,
         });
       }
     } catch (error) {

@@ -31,6 +31,7 @@ const slice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      localStorage.removeItem("user");
     },
     isEmailVerified: (
       state,
