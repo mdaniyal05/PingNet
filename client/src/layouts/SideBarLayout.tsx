@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/AppSidebar";
+import { ModeToggle } from "@/components/ModeToggle";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,7 +47,14 @@ export default function SideBarLayout() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <SearchFriend />
+          <div className="flex items-center gap-2 p-4">
+            <SearchFriend />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
+            <ModeToggle />
+          </div>
         </header>
         <ChatContainer />
       </SidebarInset>
