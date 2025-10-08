@@ -14,31 +14,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import ChatContainer from "@/features/chat/ChatContainer";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useSearchFriendToAddMutation } from "@/app/api/friendApi";
+import SearchFriend from "@/features/friend/SearchFriend";
 
 export default function SideBarLayout() {
-  const [searchPerson, setSearchPerson] = useState<string>("");
-
-  const [searchFriend, { isLoading }] = useSearchFriendToAddMutation();
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchPerson(event.target.value);
-  };
-
-  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    try {
-      const response = await searchFriend({ username: searchPerson });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <SidebarProvider
       style={
@@ -68,22 +46,7 @@ export default function SideBarLayout() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="flex items-center gap-2 mr-4">
-            <form
-              className="flex w-full max-w-sm items-center gap-2"
-              onSubmit={submitHandler}
-            >
-              <Input
-                type="text"
-                placeholder="Search username"
-                value={searchPerson}
-                onChange={handleChange}
-              />
-              <Button type="submit" variant="outline">
-                {isLoading ? "Loading...." : "Search"}
-              </Button>
-            </form>
-          </div>
+          <SearchFriend />
         </header>
         <ChatContainer />
       </SidebarInset>
