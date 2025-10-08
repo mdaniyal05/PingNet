@@ -14,7 +14,7 @@ export const friendApi = api.injectEndpoints({
   endpoints: (builder) => ({
     sendFriendRequest: builder.mutation({
       query: (_id) => ({
-        url: `${FRIEND_URL}/friend/send-friend-request/${_id}}`,
+        url: `${FRIEND_URL}/friend/send-friend-request/${_id}`,
         method: "POST",
       }),
     }),

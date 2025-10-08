@@ -12,33 +12,71 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useSearchFriendToAddMutation } from "@/app/api/friendApi";
+import {
+  useSearchFriendToAddMutation,
+  useSendFriendRequestMutation,
+} from "@/app/api/friendApi";
+
+interface FriendData {
+  _id: string;
+  fullname: string;
+  username: string;
+  avatar: string;
+}
 
 export default function SearchFriend() {
   const [searchPerson, setSearchPerson] = useState<string>("");
-  const [found, setFound] = useState<boolean>(false);
+  const [frientFound, setFrientFound] = useState<boolean>(false);
+  const [friendData, setFriendData] = useState<FriendData>({
+    _id: "",
+    fullname: "",
+    username: "",
+    avatar: "",
+  });
 
-  const [searchFriend, { isLoading }] = useSearchFriendToAddMutation();
+  const [searchFriend, { isLoading: searchLoading }] =
+    useSearchFriendToAddMutation();
+  const [sendFriendRequest, { isLoading: requestLoading }] =
+    useSendFriendRequestMutation();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPerson(event.target.value);
   };
 
-  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submitHandlerSearchFriend = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     try {
+      setFrientFound(false);
+
       const response = await searchFriend({ username: searchPerson });
 
       if (response) {
-        if (response.error) {
-          setFound(false);
-        }
-
-        if (response.data) {
-          setFound(true);
-        }
+        if (response.error) setFrientFound(false);
+        if (response.data) setFrientFound(true);
       }
+
+      const data = response.data;
+
+      if (data) {
+        setFriendData({
+          _id: data?.data?.user?._id,
+          fullname: data?.data?.user?.fullname,
+          username: data?.data?.user?.username,
+          avatar: data?.data?.user?.avatar,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onClickSendFriendRequest = async () => {
+    try {
+      const response = await sendFriendRequest(friendData._id);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +88,7 @@ export default function SearchFriend() {
         <Dialog>
           <form
             className="flex w-full max-w-sm items-center gap-2"
-            onSubmit={submitHandler}
+            onSubmit={submitHandlerSearchFriend}
           >
             <Input
               type="text"
@@ -60,34 +98,35 @@ export default function SearchFriend() {
             />
             <DialogTrigger asChild>
               <Button type="submit" variant="outline">
-                {isLoading ? "Loading...." : "Search"}
+                {searchLoading ? "Loading...." : "Search"}
               </Button>
             </DialogTrigger>
 
-            {found ? (
+            {frientFound ? (
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogTitle>Friend Found</DialogTitle>
                   <DialogDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
+                    A friend with this username is {friendData.username}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4">
                   <div className="grid gap-3">
-                    <Label htmlFor="name-1">Name</Label>
+                    <Label htmlFor="fullname">Full Name</Label>
                     <Input
-                      id="name-1"
-                      name="name"
-                      defaultValue="Pedro Duarte"
+                      id="fullname"
+                      name="fullname"
+                      value={friendData?.fullname}
+                      disabled
                     />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="username-1">Username</Label>
+                    <Label htmlFor="username">Username</Label>
                     <Input
-                      id="username-1"
+                      id="username"
                       name="username"
-                      defaultValue="@peduarte"
+                      value={friendData?.username}
+                      disabled
                     />
                   </div>
                 </div>
@@ -95,12 +134,14 @@ export default function SearchFriend() {
                   <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
                   </DialogClose>
-                  <Button type="submit">Save changes</Button>
+                  <Button onClick={onClickSendFriendRequest}>
+                    {requestLoading ? "Loading...." : "Send Friend Request"}
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             ) : (
               <DialogContent className="sm:max-w-[425px]">
-                {isLoading ? (
+                {searchLoading ? (
                   "Loading...."
                 ) : (
                   <DialogHeader>
