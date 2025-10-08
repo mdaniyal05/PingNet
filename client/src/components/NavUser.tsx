@@ -23,6 +23,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLogoutMutation } from "@/app/api/authApi";
+import { useAppDispatch } from "@/hooks/useStore";
+import { logout } from "@/features/auth/authSlice";
+import { useNavigate } from "react-router";
 
 export function NavUser({
   user,
@@ -34,6 +38,22 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [logoutUser, { isLoading }] = useLogoutMutation();
+
+  const onClickLogout = async () => {
+    try {
+      const response = await logoutUser({}).unwrap();
+      dispatch(logout());
+      navigate("/");
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -96,9 +116,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={onClickLogout}>
               <LogOut />
-              Log out
+              {isLoading ? "Loading...." : "Log Out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
