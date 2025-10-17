@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MessageSquareCodeIcon, File, Inbox } from "lucide-react";
+import { MessageSquareCodeIcon, UserCircle, Inbox } from "lucide-react";
 
 import { NavUser } from "@/components/NavUser";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,7 @@ const data = {
     {
       title: "Friends",
       url: "/friends",
-      icon: File,
+      icon: UserCircle,
       isActive: false,
     },
   ],

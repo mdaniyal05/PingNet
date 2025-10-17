@@ -14,7 +14,7 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
       $addToSet: { friendRequests: senderId },
     },
     { returnOriginal: false }
-  );
+  ).populate("friendRequests", "username fullname email avatar about");
 
   if (!sendRequest) {
     throw new ApiError(
@@ -35,7 +35,7 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     {
       $addToSet: { friendsList: receiverId },
     }
-  );
+  ).populate("friendsList", "username fullname email avatar about");
 
   const acceptRequestReceiver = await Friend.findOneAndUpdate(
     { currentUser: receiverId },
@@ -43,7 +43,7 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
       $addToSet: { friendsList: senderId },
       $pull: { friendRequests: senderId },
     }
-  );
+  ).populate("friendsList", "username fullname email avatar about");
 
   if (!(acceptRequestReceiver && acceptRequestSender)) {
     throw new ApiError(
