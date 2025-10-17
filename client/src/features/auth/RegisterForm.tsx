@@ -7,7 +7,6 @@ import { useRegisterMutation } from "../../app/api/authApi";
 import type { RegisterRequest } from "@/types/authTypes";
 import React, { useState } from "react";
 import { DatePicker } from "@/components/DatePicker";
-import { Link } from "react-router";
 import { InputFile } from "@/components/InputFile";
 import useUploadFile from "@/hooks/useUploadFIle";
 import { Progress } from "@/components/ui/progress";
@@ -174,6 +173,7 @@ export default function RegisterForm({
             type="email"
             placeholder="m@example.com"
             onChange={handleChange}
+            value={formState.email}
             required
           />
         </div>
@@ -186,18 +186,12 @@ export default function RegisterForm({
             name="password"
             type="password"
             onChange={handleChange}
-            required
+            disabled
           />
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
             <Label htmlFor="password">Confirm Password</Label>
-            <Link
-              to="/auth/forget-password"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </Link>
           </div>
           <Input
             id="confirmPassword"

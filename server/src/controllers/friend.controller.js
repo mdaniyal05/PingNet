@@ -14,9 +14,10 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
       $addToSet: { friendRequests: senderId },
     },
     { returnOriginal: false }
-  ).populate("friendRequests", "username fullname email avatar about");
+  );
 
   if (!sendRequest) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while sending friend request."
@@ -35,7 +36,7 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     {
       $addToSet: { friendsList: receiverId },
     }
-  ).populate("friendsList", "username fullname email avatar about");
+  );
 
   const acceptRequestReceiver = await Friend.findOneAndUpdate(
     { currentUser: receiverId },
@@ -43,9 +44,10 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
       $addToSet: { friendsList: senderId },
       $pull: { friendRequests: senderId },
     }
-  ).populate("friendsList", "username fullname email avatar about");
+  );
 
   if (!(acceptRequestReceiver && acceptRequestSender)) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while accepting friend request."
@@ -69,6 +71,7 @@ const rejectFriendRequest = asyncHandler(async (req, res) => {
   );
 
   if (!rejectRequest) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while rejecting friend request."
@@ -90,6 +93,7 @@ const removeFriend = asyncHandler(async (req, res) => {
   );
 
   if (!removeFriend) {
+    res.status(500);
     throw new ApiError(500, "Something went wrong while removing friend.");
   }
 
@@ -99,9 +103,13 @@ const removeFriend = asyncHandler(async (req, res) => {
 const showFriendList = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const friendList = await Friend.findOne({ currentUser: userId });
+  const friendList = await Friend.findOne({ currentUser: userId }).populate(
+    "friendsList",
+    "username fullname email avatar about"
+  );
 
   if (!friendList) {
+    res.status(500);
     throw new ApiError(500, "Something went wrong while fetching friend list.");
   }
 
@@ -113,9 +121,13 @@ const showFriendList = asyncHandler(async (req, res) => {
 const showFriendRequests = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const friendRequests = await Friend.findOne({ currentUser: userId });
+  const friendRequests = await Friend.findOne({ currentUser: userId }).populate(
+    "friendRequests",
+    "username fullname email avatar about"
+  );
 
   if (!friendRequests) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while fetching friend requests."
@@ -135,6 +147,7 @@ const searchFriendToAdd = asyncHandler(async (req, res) => {
   );
 
   if (!user) {
+    res.status(404);
     throw new ApiError(404, "User with this username not found.");
   }
 
