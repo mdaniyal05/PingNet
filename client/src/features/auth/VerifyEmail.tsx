@@ -11,6 +11,7 @@ import { isEmailVerified } from "../../features/auth/authSlice";
 import { useSendOtpMutation } from "../../app/api/otpApi";
 import { useVerifyEmailMutation } from "../../app/api/authApi";
 import { Link } from "react-router";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export default function VerifyEmail({
   className,
@@ -82,6 +83,7 @@ export default function VerifyEmail({
     </div>
   ) : (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <ModeToggle />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-1">
           <form className="p-6 md:p-8" onSubmit={submitHandlerEmail}>
