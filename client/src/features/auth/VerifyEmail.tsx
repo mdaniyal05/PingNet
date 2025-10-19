@@ -104,19 +104,21 @@ export default function VerifyEmail({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 {isLoadingEmail ? "Loading..." : "Send Code"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-background text-muted-foreground relative z-10 px-2">
+                <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or
                 </span>
               </div>
             </div>
-            <div className="text-center text-sm">
-              Already have an account?{" "}
-              <Link to="/auth/login" className="underline underline-offset-4">
-                Sign in
+            <div className="text-center text-sm mt-4">
+              Already have an account?
+              <Link to="/auth/login">
+                <Button variant="link" className="cursor-pointer">
+                  Sign in
+                </Button>
               </Link>
             </div>
           </form>

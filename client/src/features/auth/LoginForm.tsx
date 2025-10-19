@@ -118,7 +118,7 @@ export default function LoginForm({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 {isLoading ? "Loading..." : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -127,17 +127,20 @@ export default function LoginForm({
                 </span>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  to="/auth/verify"
-                  className="underline underline-offset-4"
-                >
-                  Sign up
+                Don&apos;t have an account?
+                <Link to="/auth/verify">
+                  <Button variant="link" className="cursor-pointer">
+                    Sign up
+                  </Button>
                 </Link>
               </div>
               <div className="text-center text-sm">
-                Login with{" "}
-                <Button onClick={() => setLoginWith("username")}>
+                Login with
+                <Button
+                  variant="link"
+                  onClick={() => setLoginWith("username")}
+                  className="cursor-pointer"
+                >
                   username
                 </Button>
               </div>
@@ -171,7 +174,7 @@ export default function LoginForm({
                   id="username"
                   type="text"
                   name="username"
-                  placeholder="m@example.com"
+                  placeholder="ryuu1050"
                   onChange={handleChange}
                   required
                 />
@@ -194,7 +197,7 @@ export default function LoginForm({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 {isLoading ? "Loading..." : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -203,17 +206,22 @@ export default function LoginForm({
                 </span>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  to="/auth/verify"
-                  className="underline underline-offset-4"
-                >
-                  Sign up
+                Don&apos;t have an account?
+                <Link to="/auth/verify">
+                  <Button variant="link" className="cursor-pointer">
+                    Sign up
+                  </Button>
                 </Link>
               </div>
               <div className="text-center text-sm">
-                Login with{" "}
-                <Button onClick={() => setLoginWith("email")}>email</Button>
+                Login with
+                <Button
+                  variant="link"
+                  onClick={() => setLoginWith("email")}
+                  className="cursor-pointer"
+                >
+                  email
+                </Button>
               </div>
             </div>
           </form>
