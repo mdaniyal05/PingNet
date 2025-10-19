@@ -50,23 +50,21 @@ export default function LoginForm({
     try {
       event.preventDefault();
 
-      const response = await login({ ...formState });
-
-      console.log(response);
+      const response = await login({ ...formState }).unwrap();
 
       let user: User;
       let token: string;
 
-      if (response) {
-        const data = response.data.data;
+      if (response?.data) {
+        const data = response?.data;
 
         user = {
-          username: data.username,
-          email: data.email,
-          fullname: data.fullname,
+          username: data?.username,
+          email: data?.email,
+          fullname: data?.fullname,
         };
 
-        token = response.data.data.accessToken;
+        token = data?.accessToken;
 
         dispatch(setCredentials(user));
         dispatch(setToken(token));
