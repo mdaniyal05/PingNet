@@ -1,5 +1,7 @@
 import React from "react";
 import { useShowFriendRequestsQuery } from "@/app/api/friendApi";
+import { X, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type FriendRequests = {
   _id: string;
@@ -37,10 +39,27 @@ export default function FriendRequests() {
                 <div className="flex w-full items-center gap-2">
                   <span>{item.username}</span>{" "}
                 </div>
+
                 <span className="font-medium">{item.fullname}</span>
                 <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
                   {item.email}
                 </span>
+                <div className="flex gap-3 mt-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full cursor-pointer"
+                  >
+                    <Check />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full cursor-pointer"
+                  >
+                    <X />
+                  </Button>
+                </div>
               </a>
             ))}
         </>
