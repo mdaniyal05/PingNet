@@ -22,8 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
-
-import { useShowFriendRequestsQuery } from "../app/api/friendApi";
+import FriendRequests from "@/features/friend/FriendRequests";
 
 const data = {
   navMain: [
@@ -48,28 +47,10 @@ const data = {
   ],
 };
 
-type FriendRequests = {
-  _id: string;
-  username: string;
-  fullname: string;
-  email: string;
-  about: string;
-  avatar: string;
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
-  const [allRequests, setAllRequests] = React.useState<FriendRequests[]>([]);
+
   const { setOpen } = useSidebar();
-
-  const { data: requests, isLoading } = useShowFriendRequestsQuery({});
-
-  React.useEffect(() => {
-    if (requests) {
-      setAllRequests(requests?.data?.friendRequests?.friendRequests);
-      console.log(requests?.data?.friendRequests?.friendRequests);
-    }
-  }, [requests]);
 
   return (
     <Sidebar
@@ -147,29 +128,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
-              {isLoading ? (
-                "Loading...."
-              ) : (
-                <>
-                  {requests &&
-                    activeItem.title === "Friend Requests" &&
-                    allRequests.map((item) => (
-                      <a
-                        href="#"
-                        key={item._id}
-                        className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0"
-                      >
-                        <div className="flex w-full items-center gap-2">
-                          <span>{item.username}</span>{" "}
-                        </div>
-                        <span className="font-medium">{item.fullname}</span>
-                        <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
-                          {item.email}
-                        </span>
-                      </a>
-                    ))}
-                </>
-              )}
+              {activeItem.title === "Friend Requests" && <FriendRequests />}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
