@@ -1,5 +1,9 @@
 import React from "react";
-import { useShowFriendRequestsQuery } from "@/app/api/friendApi";
+import {
+  useShowFriendRequestsQuery,
+  useAcceptFriendRequestMutation,
+  useRejectFriendRequestMutation,
+} from "@/app/api/friendApi";
 import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +19,11 @@ type FriendRequests = {
 export default function FriendRequests() {
   const [allRequests, setAllRequests] = React.useState<FriendRequests[]>([]);
 
+  const [acceptRequest, { isLoading: acceptRequestLoading }] =
+    useAcceptFriendRequestMutation();
+  const [rejectRequest, { isLoading: rejectRequestLoading }] =
+    useRejectFriendRequestMutation();
+
   const { data: requests, isLoading } = useShowFriendRequestsQuery({});
 
   React.useEffect(() => {
@@ -22,6 +31,24 @@ export default function FriendRequests() {
       setAllRequests(requests?.data?.friendRequests?.friendRequests);
     }
   }, [requests]);
+
+  const onClickAcceptRequest = async (id: string) => {
+    try {
+      const response = await acceptRequest(id);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onClickRejectRequest = async (id: string) => {
+    try {
+      const response = await rejectRequest(id);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -49,15 +76,17 @@ export default function FriendRequests() {
                     variant="outline"
                     size="icon"
                     className="rounded-full cursor-pointer"
+                    onClick={() => onClickAcceptRequest(item._id)}
                   >
-                    <Check />
+                    {acceptRequestLoading ? "Loading..." : <Check />}
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     className="rounded-full cursor-pointer"
+                    onClick={() => onClickRejectRequest(item._id)}
                   >
-                    <X />
+                    {rejectRequestLoading ? "Loading..." : <X />}
                   </Button>
                 </div>
               </a>
