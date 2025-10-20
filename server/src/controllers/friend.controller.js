@@ -8,6 +8,11 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
   const senderId = req.user._id;
   const receiverId = req.params._id;
 
+  if (senderId === receiverId) {
+    res.status(400);
+    throw new ApiError(400, "You can't send friend request to yourself.");
+  }
+
   const sendRequest = await Friend.findOneAndUpdate(
     { currentUser: receiverId },
     {
