@@ -108,19 +108,19 @@ const removeFriend = asyncHandler(async (req, res) => {
 const showFriendList = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const friendList = await Friend.findOne({ currentUser: userId }).populate(
+  const friendsList = await Friend.findOne({ currentUser: userId }).populate(
     "friendsList",
     "username fullname email avatar about"
   );
 
-  if (!friendList) {
+  if (!friendsList) {
     res.status(500);
     throw new ApiError(500, "Something went wrong while fetching friend list.");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { friendList }, "Your friend list."));
+    .json(new ApiResponse(200, { friendsList }, "Your friend list."));
 });
 
 const showFriendRequests = asyncHandler(async (req, res) => {

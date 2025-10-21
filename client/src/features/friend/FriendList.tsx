@@ -25,7 +25,7 @@ export default function FriendList() {
 
   React.useEffect(() => {
     if (list) {
-      setAllFriends(list?.data?.friendList?.friendList);
+      setAllFriends(list?.data?.friendsList?.friendsList);
     }
   }, [list]);
 
