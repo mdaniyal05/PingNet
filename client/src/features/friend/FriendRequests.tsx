@@ -24,7 +24,8 @@ export default function FriendRequests() {
   const [rejectRequest, { isLoading: rejectRequestLoading }] =
     useRejectFriendRequestMutation();
 
-  const { data: requests, isLoading } = useShowFriendRequestsQuery({});
+  const { data: requests, isLoading: requestsLoading } =
+    useShowFriendRequestsQuery({});
 
   React.useEffect(() => {
     if (requests) {
@@ -34,7 +35,7 @@ export default function FriendRequests() {
 
   const onClickAcceptRequest = async (id: string) => {
     try {
-      const response = await acceptRequest(id);
+      const response = await acceptRequest(id).unwrap();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -43,7 +44,7 @@ export default function FriendRequests() {
 
   const onClickRejectRequest = async (id: string) => {
     try {
-      const response = await rejectRequest(id);
+      const response = await rejectRequest(id).unwrap();
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -52,7 +53,7 @@ export default function FriendRequests() {
 
   return (
     <>
-      {isLoading ? (
+      {requestsLoading ? (
         "Loading...."
       ) : (
         <>
