@@ -92,12 +92,17 @@ const removeFriend = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const friendId = req.params._id;
 
-  const removeFriend = await Friend.findOneAndUpdate(
+  const currentUserRemoveFriend = await Friend.findOneAndUpdate(
     { currentUser: userId },
     { $pull: { friendsList: friendId } }
   );
 
-  if (!removeFriend) {
+  const removedFriend = await Friend.findOneAndUpdate(
+    { currentUser: friendId },
+    { $pull: { friendsList: userId } }
+  );
+
+  if (!removedFriend && !currentUserRemoveFriend) {
     res.status(500);
     throw new ApiError(500, "Something went wrong while removing friend.");
   }
