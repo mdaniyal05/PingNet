@@ -18,6 +18,7 @@ const generateAccessandRefreshToken = async (userId) => {
     const user = await User.findById(userId);
 
     if (!user) {
+      res.status(404);
       throw new ApiError(404, "User not found.");
     }
 
@@ -42,6 +43,7 @@ const generateAccessandRefreshToken = async (userId) => {
 
     return { refreshToken, accessToken };
   } catch (error) {
+    res.status(500);
     throw new ApiError(
       500,
       "Something went wrong while generating access and refresh token."
@@ -88,6 +90,7 @@ const registerUser = asyncHandler(async (req, res) => {
       confirmPassword,
     ].some((field) => field?.trim() === "")
   ) {
+    res.status(400);
     throw new ApiError(400, "All fields are required.");
   }
 

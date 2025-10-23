@@ -9,16 +9,19 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
+    res.status(400);
     throw new ApiError(400, "User already exists with this email.");
   }
 
   if (!OTP) {
+    res.status(404);
     throw new ApiError(404, "OTP is required for verification.");
   }
 
   const userOTP = await Otp.findOne({ email });
 
   if (!userOTP) {
+    res.status(500);
     throw new ApiError(500, "No OTP found for this email.");
   }
 
@@ -51,6 +54,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
       userOTP.blockUntil = blockUntil;
     }
 
+    res.status(403);
     throw new ApiError(403, "Invalid OTP. Try again.");
   }
 

@@ -11,12 +11,14 @@ const socketAuth = asyncSocketHandler(async (socket, next) => {
       ?.split("=")[1];
 
     if (!jwtToken) {
+      res.status(401);
       throw new ApiError(401, "Unauthorized request.");
     }
 
     const decoded = jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
 
     if (!decoded) {
+      res.status(401);
       throw new ApiError(401, "Invalid access token.");
     }
 
@@ -25,6 +27,7 @@ const socketAuth = asyncSocketHandler(async (socket, next) => {
     );
 
     if (!user) {
+      res.status(401);
       throw new ApiError(401, "Invalid access token.");
     }
 
@@ -33,6 +36,7 @@ const socketAuth = asyncSocketHandler(async (socket, next) => {
 
     next();
   } catch (error) {
+    res.status(401);
     throw new ApiError(401, "Not authorized. Token failed.");
   }
 });

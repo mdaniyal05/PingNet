@@ -17,6 +17,7 @@ const getMessages = asyncHandler(async (req, res) => {
   });
 
   if (!messages) {
+    res.status(500);
     throw new ApiError(500, "Something went wrong while fetching messages.");
   }
 
@@ -65,6 +66,7 @@ const sendMessage = asyncHandler(async (req, res) => {
   });
 
   if (!newMessage) {
+    res.status(500);
     throw new ApiError(500, "Something went wrong while creating new message.");
   }
 

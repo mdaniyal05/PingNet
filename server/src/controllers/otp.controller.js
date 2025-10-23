@@ -12,10 +12,12 @@ const generateOTP = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
+    res.status(400);
     throw new ApiError(400, "User already exists with this email.");
   }
 
   if (!email) {
+    res.status(400);
     throw new ApiError(400, "Email is required for verification.");
   }
 
@@ -29,6 +31,7 @@ const generateOTP = asyncHandler(async (req, res) => {
     const currentTime = new Date();
 
     if (currentTime < OTP.blockUntil) {
+      res.status(403);
       throw new ApiError(403, "This email is blocked. Try after some time.");
     } else {
       OTP.isBlocked = false;
@@ -45,6 +48,7 @@ const generateOTP = asyncHandler(async (req, res) => {
     lastOtpTime &&
     currentTime - lastOtpTime < 60000
   ) {
+    res.status(403);
     throw new ApiError(403, "One minute gap is required between OTP requests.");
   }
 

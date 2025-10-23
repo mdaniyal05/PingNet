@@ -8,6 +8,7 @@ const uploadAvatar = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
+    res.status(400);
     throw new ApiError(400, "Email is required.");
   }
 
@@ -24,12 +25,14 @@ const uploadAvatar = asyncHandler(async (req, res) => {
   }
 
   if (!avatarLocalPath) {
+    res.status(400);
     throw new ApiError(400, "Avatar file is required.");
   }
 
   const avatar = await uploadFileOnCloudinary(avatarLocalPath);
 
   if (!avatar) {
+    res.status(400);
     throw new ApiError(400, "Avatar file is required.");
   }
 
