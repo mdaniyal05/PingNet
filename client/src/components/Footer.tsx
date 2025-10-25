@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Footer() {
   return (
@@ -15,9 +16,11 @@ export default function Footer() {
           Ready to join PingNet?
         </Badge>
         <h2 className="text-3xl font-semibold">Start messaging today</h2>
-        <Button size="lg" className="mt-4">
-          Sign Up Free
-        </Button>
+        <Link to="/auth/verify">
+          <Button size="lg" className="mt-4 cursor-pointer">
+            Sign Up Free
+          </Button>
+        </Link>
       </motion.div>
       <p className="text-sm text-muted-foreground mt-8">
         © {new Date().getFullYear()} PingNet — All rights reserved.

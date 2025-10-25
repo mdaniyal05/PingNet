@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function Hero() {
   return (
@@ -26,7 +27,11 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <Button size="lg">Get Started</Button>
+        <Link to="/auth/login">
+          <Button size="lg" className="cursor-pointer">
+            Get Started
+          </Button>
+        </Link>
       </motion.div>
     </section>
   );
