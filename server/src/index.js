@@ -5,8 +5,6 @@ dotenv.config();
 const { httpServer, app } = require("./app");
 const connectDB = require("./db/connectionDB");
 
-require("./webSockets/socket");
-
 const PORT = process.env.PORT || 5000;
 
 connectDB()
