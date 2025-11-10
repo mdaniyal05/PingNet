@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 const httpServer = createServer(app);
+const { initializeSocket } = require("./webSockets/socket");
 const {
   notFound,
   errorHandler,
@@ -28,6 +29,16 @@ const corsOptions = {
   },
   credentials: true,
 };
+
+const io = initializeSocket(httpServer, {
+  corsOrigin: "http://localhost:3000",
+  redisHost: "localhost",
+  redisPort: 6379,
+  redisPassword: undefined,
+  redisDb: 0,
+});
+
+app.set("io", io);
 
 app.use(cors(corsOptions));
 app.use(express.json());

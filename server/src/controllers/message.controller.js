@@ -3,7 +3,6 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
 const uploadFileOnCloudinary = require("../service/cloudinary");
-const { getMessage } = require("../webSockets/events/message.event");
 
 const getMessages = asyncHandler(async (req, res) => {
   const senderId = req.user._id;
@@ -69,8 +68,6 @@ const sendMessage = asyncHandler(async (req, res) => {
     res.status(500);
     throw new ApiError(500, "Something went wrong while creating new message.");
   }
-
-  getMessage(receiverId, newMessage);
 
   return res
     .status(201)
