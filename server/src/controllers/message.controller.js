@@ -25,7 +25,7 @@ const getMessages = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { messages }, "Your messages."));
 });
 
-const sendMessage = asyncHandler(async (req, res) => {
+const createMessage = asyncHandler(async (req, res) => {
   const { text, image, video } = req.body;
 
   const receiverId = req.params._id;
@@ -56,9 +56,12 @@ const sendMessage = asyncHandler(async (req, res) => {
     uploadedVideo = await uploadFileOnCloudinary(videoLocalPath);
   }
 
+  const roomId = [senderId, receiverId].join("-");
+
   const newMessage = await Message.create({
     senderId,
     receiverId,
+    roomId,
     text,
     image: uploadedImage.url,
     video: uploadedVideo.url,
@@ -76,4 +79,4 @@ const sendMessage = asyncHandler(async (req, res) => {
     );
 });
 
-module.exports = { getMessages, sendMessage };
+module.exports = { getMessages, createMessage };

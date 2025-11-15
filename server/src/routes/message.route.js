@@ -3,7 +3,7 @@ const router = express.Router();
 const verifyJWT = require("../middlewares/auth.middleware");
 const {
   getMessages,
-  sendMessage,
+  createMessage,
 } = require("../controllers/message.controller");
 const upload = require("../middlewares/multer.middleware");
 
@@ -15,7 +15,7 @@ router.post(
     { name: "video", maxCount: 1 },
   ]),
   verifyJWT,
-  sendMessage
+  createMessage
 );
 
 module.exports = router;
