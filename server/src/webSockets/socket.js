@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
 const Redis = require("ioredis");
+const socketAuth = require("./middlewares/socketAuth.middleware");
 
 function initializeSocket(httpServer, options = {}) {
   const io = new Server(httpServer, {
@@ -27,6 +28,8 @@ function initializeSocket(httpServer, options = {}) {
 
   const pubClient = new Redis(redisConfig);
   const subClient = pubClient.duplicate();
+
+  io.use(socketAuth);
 
   pubClient.on("error", (err) => {
     console.error("Redis Pub Client Error:", err);

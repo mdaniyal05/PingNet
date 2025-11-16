@@ -4,8 +4,30 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
+import { useEffect } from "react";
+import { socket } from "./socket";
 
 export default function ChatContainer() {
+  useEffect(() => {
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Connected to server:", socket.id);
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err.message);
+    });
+
+    return () => {
+      socket.off("connect");
+
+      socket.off("connect_error");
+
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Chat Header */}
