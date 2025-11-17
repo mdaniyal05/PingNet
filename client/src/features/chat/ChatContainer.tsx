@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "./socket";
 
 export default function ChatContainer() {
