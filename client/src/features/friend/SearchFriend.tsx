@@ -16,13 +16,7 @@ import {
   useSearchFriendToAddMutation,
   useSendFriendRequestMutation,
 } from "@/app/api/friendApi";
-
-interface FriendData {
-  _id: string;
-  fullname: string;
-  username: string;
-  avatar: string;
-}
+import { type FriendData } from "../../types/friendTypes";
 
 export default function SearchFriend() {
   const [searchPerson, setSearchPerson] = useState<string>("");

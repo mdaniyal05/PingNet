@@ -5,18 +5,10 @@ import {
 } from "@/app/api/friendApi";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-
-type FriendList = {
-  _id: string;
-  username: string;
-  fullname: string;
-  email: string;
-  about: string;
-  avatar: string;
-};
+import { type Friend } from "../../types/friendTypes";
 
 export default function FriendList() {
-  const [allFriends, setAllFriends] = React.useState<FriendList[]>([]);
+  const [allFriends, setAllFriends] = React.useState<Friend[]>([]);
 
   const [removeFriend, { isLoading: removeLoading }] =
     useRemoveFriendMutation();

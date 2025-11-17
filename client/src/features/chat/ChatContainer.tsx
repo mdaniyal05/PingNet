@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { socket } from "./socket";
 
 export default function ChatContainer() {
+  const [message, setMessage] = useState<string>("");
+
   useEffect(() => {
     socket.connect();
 
@@ -132,6 +134,8 @@ export default function ChatContainer() {
             <Input
               placeholder="Type a message..."
               className="pr-12 min-h-[40px] resize-none"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
           </div>
           <Button size="icon" className="h-10 w-10 shrink-0">

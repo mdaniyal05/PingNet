@@ -6,18 +6,10 @@ import {
 } from "@/app/api/friendApi";
 import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-type FriendRequests = {
-  _id: string;
-  username: string;
-  fullname: string;
-  email: string;
-  about: string;
-  avatar: string;
-};
+import { type Friend } from "../../types/friendTypes";
 
 export default function FriendRequests() {
-  const [allRequests, setAllRequests] = React.useState<FriendRequests[]>([]);
+  const [allRequests, setAllRequests] = React.useState<Friend[]>([]);
 
   const [acceptRequest, { isLoading: acceptRequestLoading }] =
     useAcceptFriendRequestMutation();
