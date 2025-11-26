@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const sendGrid = require("../service/sendGrid");
+const sendGrid = require("../service/resend");
 
 const sendEmail = async (email, subject, text, filePath, fileName) => {
   try {
