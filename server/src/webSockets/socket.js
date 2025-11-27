@@ -49,11 +49,57 @@ function initializeSocket(httpServer, options = {}) {
 
   io.adapter(createAdapter(pubClient, subClient));
 
+  const activeUsers = new Map();
+
   io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
+    console.log(`User connected: ${socket.id}, UserId: ${socket.userId}`);
+
+    activeUsers.set(socket.userId, socket.id);
+
+    socket.join(socket.userId);
+
+    socket.on("joinRoom", ({ otherUserId }) => {
+      const roomId = [socket.userId, otherUserId].sort().join("-");
+      socket.join(roomId);
+      console.log(`User ${socket.userId} joined room: ${roomId}`);
+
+      socket.to(otherUserId).emit("userOnline", {
+        userId: socket.userId,
+      });
+    });
+
+    socket.on("leaveRoom", ({ otherUserId }) => {
+      const roomId = [socket.userId, otherUserId].sort().join("-");
+      socket.leave(roomId);
+      console.log(`User ${socket.userId} left room: ${roomId}`);
+    });
+
+    socket.on("typing", ({ receiverId }) => {
+      socket.to(receiverId).emit("userTyping", {
+        senderId: socket.userId,
+      });
+    });
+
+    socket.on("stopTyping", ({ receiverId }) => {
+      socket.to(receiverId).emit("userStoppedTyping", {
+        senderId: socket.userId,
+      });
+    });
+
+    socket.on("messageRead", ({ messageId, senderId }) => {
+      socket.to(senderId).emit("messageReadReceipt", {
+        messageId,
+        readBy: socket.userId,
+      });
+    });
 
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+      console.log(`User disconnected: ${socket.id}, UserId: ${socket.userId}`);
+      activeUsers.delete(socket.userId);
+
+      socket.broadcast.emit("userOffline", {
+        userId: socket.userId,
+      });
     });
   });
 

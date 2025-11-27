@@ -52,11 +52,11 @@ const createMessage = asyncHandler(async (req, res) => {
     Array.isArray(req.files.video) &&
     req.files.video.length > 0
   ) {
-    videoLocalPath = req.files?.image[0]?.path;
+    videoLocalPath = req.files?.video[0]?.path;
     uploadedVideo = await uploadFileOnCloudinary(videoLocalPath);
   }
 
-  const roomId = [senderId, receiverId].join("-");
+  const roomId = [senderId, receiverId].sort().join("-");
 
   const newMessage = await Message.create({
     senderId,
@@ -71,6 +71,14 @@ const createMessage = asyncHandler(async (req, res) => {
     res.status(500);
     throw new ApiError(500, "Something went wrong while creating new message.");
   }
+
+  const io = req.app.get("io");
+
+  io.to(roomId).emit("new-message", {
+    message: newMessage,
+    senderId: senderId.toString(),
+    receiverId: receiverId.toString(),
+  });
 
   return res
     .status(201)
