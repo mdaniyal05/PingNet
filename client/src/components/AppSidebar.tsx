@@ -24,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import FriendRequests from "@/features/friend/FriendRequests";
 import FriendList from "@/features/friend/FriendList";
+import Chats from "@/features/chat/Chats";
 
 const data = {
   navMain: [
@@ -131,6 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroupContent>
               {activeItem.title === "Friend Requests" && <FriendRequests />}
               {activeItem.title === "Friend List" && <FriendList />}
+              {activeItem.title === "Inbox" && <Chats />}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
