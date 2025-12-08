@@ -14,6 +14,7 @@ import VerifyEmailLayout from "./layouts/VerifyEmailLayout.tsx";
 import { VerifiedOutlet } from "./utils/verifiedOutlet.tsx";
 import { PrivateOutlet } from "./utils/privateOutlet.tsx";
 import SideBarLayout from "./layouts/SideBarLayout.tsx";
+import ChatContainer from "./features/chat/ChatContainer.tsx";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,12 @@ const router = createBrowserRouter([
           {
             path: "sidebar",
             element: <SideBarLayout />,
+            children: [
+              {
+                path: "message/:receiverId",
+                element: <ChatContainer />,
+              },
+            ],
           },
         ],
       },

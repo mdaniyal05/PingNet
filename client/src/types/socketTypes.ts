@@ -1,7 +1,7 @@
 import type { Socket } from "socket.io-client";
 
 interface ServerToClientEvents {
-  "send-message-to": (message: string) => void;
+  "new-message": ({ ...args }) => void;
 }
 
 interface ClientToServerEvents {

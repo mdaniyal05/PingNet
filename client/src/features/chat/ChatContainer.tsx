@@ -4,12 +4,10 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { socket } from "./socket";
 
 export default function ChatContainer() {
-  const [message, setMessage] = useState<string>("");
-
   useEffect(() => {
     socket.connect();
 
@@ -75,36 +73,8 @@ export default function ChatContainer() {
               </span>
             </div>
           </div>
-          <div className="flex items-start gap-3 max-w-[80%]">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col gap-1">
-              <div className="rounded-lg bg-muted px-4 py-2">
-                <p className="text-sm">Hey! How are you doing today?</p>
-              </div>
-              <span className="text-xs text-muted-foreground px-2">
-                10:30 AM
-              </span>
-            </div>
-          </div>
 
           {/* Sent Message */}
-          <div className="flex items-start gap-3 max-w-[80%] self-end">
-            <div className="flex flex-col gap-1 items-end">
-              <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
-                <p className="text-sm">I'm doing great! Thanks for asking.</p>
-              </div>
-              <span className="text-xs text-muted-foreground px-2">
-                10:32 AM
-              </span>
-            </div>
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="You" />
-              <AvatarFallback>ME</AvatarFallback>
-            </Avatar>
-          </div>
           <div className="flex items-start gap-3 max-w-[80%] self-end">
             <div className="flex flex-col gap-1 items-end">
               <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
@@ -134,8 +104,8 @@ export default function ChatContainer() {
             <Input
               placeholder="Type a message..."
               className="pr-12 min-h-[40px] resize-none"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              // value={message}
+              // onChange={(e) => setMessage(e.target.value)}
             />
           </div>
           <Button size="icon" className="h-10 w-10 shrink-0">

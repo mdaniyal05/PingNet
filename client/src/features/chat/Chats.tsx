@@ -1,6 +1,7 @@
 import React from "react";
 import { useShowFriendListQuery } from "@/app/api/friendApi";
 import { type Friend } from "../../types/friendTypes";
+import { Link } from "react-router";
 
 export default function Chats() {
   const [allFriends, setAllFriends] = React.useState<Friend[]>([]);
@@ -21,19 +22,21 @@ export default function Chats() {
       ) : (
         <>
           {list &&
-            allFriends.map((item) => (
-              <div
-                key={item._id}
-                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer"
-              >
-                <div className="flex w-full items-center gap-2">
-                  <span>{item.username}</span>{" "}
-                  {isNewMessage && (
-                    <div className="bg-red-900 rounded-full w-2 h-2"></div>
-                  )}
+            allFriends.map((item, idx) => (
+              <Link to={`/sidebar/message/${item._id}`} key={idx}>
+                <div
+                  key={item._id}
+                  className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer"
+                >
+                  <div className="flex w-full items-center gap-2">
+                    <span>{item.username}</span>{" "}
+                    {isNewMessage && (
+                      <div className="bg-red-900 rounded-full w-2 h-2"></div>
+                    )}
+                  </div>
+                  <span className="font-medium">{item.fullname}</span>
                 </div>
-                <span className="font-medium">{item.fullname}</span>
-              </div>
+              </Link>
             ))}
         </>
       )}
