@@ -8,7 +8,7 @@ const getMessages = asyncHandler(async (req, res) => {
   const senderId = req.user._id;
   const receiverId = req.params._id;
 
-  const messages = await Message.findOne({
+  const messages = await Message.find({
     $or: [
       { senderId: senderId, receiverId: receiverId },
       { senderId: receiverId, receiverId: senderId },
@@ -63,8 +63,8 @@ const createMessage = asyncHandler(async (req, res) => {
     receiverId,
     roomId,
     text,
-    image: uploadedImage.url,
-    video: uploadedVideo.url,
+    image: uploadedImage?.url,
+    video: uploadedVideo?.url,
   });
 
   if (!newMessage) {

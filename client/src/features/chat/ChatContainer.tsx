@@ -1,14 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "./socket";
+import {
+  useSendMessageMutation,
+  useGetMessagesQuery,
+} from "@/app/api/messageApi";
+import { useParams } from "react-router";
 
 export default function ChatContainer() {
+  const { receiverId } = useParams();
+
+  const [allMessages, setAllMessages] = useState<any[] | null>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+
+  const [sendMessage, { isLoading }] = useSendMessageMutation();
+
+  const { data: messages, isLoading: messagesLoading } =
+    useGetMessagesQuery(receiverId);
+
+  const onClickSendMessage = async () => {
+    try {
+      const response = await sendMessage({
+        _id: receiverId,
+        text: newMessage,
+      }).unwrap();
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    if (messages) {
+      setAllMessages(messages.data?.messages);
+    }
+
     socket.connect();
 
     socket.on("connect", () => {
@@ -26,7 +59,7 @@ export default function ChatContainer() {
 
       socket.disconnect();
     };
-  }, []);
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -104,12 +137,16 @@ export default function ChatContainer() {
             <Input
               placeholder="Type a message..."
               className="pr-12 min-h-[40px] resize-none"
-              // value={message}
-              // onChange={(e) => setMessage(e.target.value)}
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
             />
           </div>
-          <Button size="icon" className="h-10 w-10 shrink-0">
-            <Send className="h-5 w-5" />
+          <Button
+            size="icon"
+            className="h-10 w-10 shrink-0"
+            onClick={onClickSendMessage}
+          >
+            {isLoading ? "Loading..." : <Send className="h-5 w-5" />}
           </Button>
         </div>
       </div>
