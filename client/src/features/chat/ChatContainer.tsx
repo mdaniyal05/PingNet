@@ -12,12 +12,20 @@ import {
   useGetMessagesQuery,
 } from "@/app/api/messageApi";
 import { useParams } from "react-router";
+import { useAppSelector } from "@/hooks/useStore";
+import { selectCurrentUser } from "../auth/authSlice";
 
 export default function ChatContainer() {
   const { receiverId } = useParams();
 
+  const [senderId, setSenderId] = useState<string>("");
+
+  const user = useAppSelector(selectCurrentUser);
+
   const [allMessages, setAllMessages] = useState<any[] | null>([]);
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [newMessages, setNewMessages] = useState<string[]>([]);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
 
   const [sendMessage, { isLoading }] = useSendMessageMutation();
 
@@ -26,12 +34,15 @@ export default function ChatContainer() {
 
   const onClickSendMessage = async () => {
     try {
-      const response = await sendMessage({
+      socket.emit("send-message", inputMessage);
+
+      await sendMessage({
         _id: receiverId,
-        text: newMessage,
+        text: inputMessage,
       }).unwrap();
 
-      console.log(response.data);
+      setShowMessage(true);
+      setInputMessage("");
     } catch (error) {
       console.error(error);
     }
@@ -48,6 +59,21 @@ export default function ChatContainer() {
       console.log("Connected to server:", socket.id);
     });
 
+    socket.emit("join-room", receiverId);
+
+    socket.on("new-message", ({ message, senderId, receiverId }) => {
+      setNewMessages((prev) => [...prev, inputMessage]);
+      setSenderId(senderId); 
+
+      console.log(message);
+      console.log(senderId);
+      console.log(receiverId);
+    });
+
+    socket.on("user-online", (userId) => {
+      console.log("Hello: ", userId);
+    });
+
     socket.on("connect_error", (err) => {
       console.error("Connection error:", err.message);
     });
@@ -59,7 +85,7 @@ export default function ChatContainer() {
 
       socket.disconnect();
     };
-  }, [messages]);
+  }, [inputMessage, messages, receiverId]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -99,29 +125,32 @@ export default function ChatContainer() {
             </Avatar>
             <div className="flex flex-col gap-1">
               <div className="rounded-lg bg-muted px-4 py-2">
-                <p className="text-sm">Hey! How are you doing today?</p>
+                <p className="text-sm">hello</p>
               </div>
               <span className="text-xs text-muted-foreground px-2">
                 10:30 AM
               </span>
             </div>
           </div>
-
           {/* Sent Message */}
-          <div className="flex items-start gap-3 max-w-[80%] self-end">
-            <div className="flex flex-col gap-1 items-end">
-              <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
-                <p className="text-sm">I'm doing great! Thanks for asking.</p>
+          {showMessage && receiverId !== senderId ? (
+            <div className="flex items-start gap-3 max-w-[80%] self-end">
+              <div className="flex flex-col gap-1 items-end">
+                <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
+                  <p className="text-sm">{newMessage}</p>
+                </div>
+                <span className="text-xs text-muted-foreground px-2">
+                  10:32 AM
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground px-2">
-                10:32 AM
-              </span>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="You" />
+                <AvatarFallback>ME</AvatarFallback>
+              </Avatar>
             </div>
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="You" />
-              <AvatarFallback>ME</AvatarFallback>
-            </Avatar>
-          </div>
+          ) : (
+            <></>
+          )}
         </div>
       </ScrollArea>
 
@@ -137,8 +166,8 @@ export default function ChatContainer() {
             <Input
               placeholder="Type a message..."
               className="pr-12 min-h-[40px] resize-none"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
             />
           </div>
           <Button

@@ -75,7 +75,7 @@ const createMessage = asyncHandler(async (req, res) => {
   const io = req.app.get("io");
 
   io.to(roomId).emit("new-message", {
-    message: newMessage,
+    message: newMessage.text,
     senderId: senderId.toString(),
     receiverId: receiverId.toString(),
   });

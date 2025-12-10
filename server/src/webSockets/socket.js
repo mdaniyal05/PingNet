@@ -58,19 +58,27 @@ function initializeSocket(httpServer, options = {}) {
 
     socket.join(socket.userId);
 
-    socket.on("joinRoom", ({ otherUserId }) => {
-      const roomId = [socket.userId, otherUserId].sort().join("-");
+    socket.on("join-room", (receiverId) => {
+      const roomId = [socket.userId, receiverId].sort().join("-");
+
       socket.join(roomId);
+
       console.log(`User ${socket.userId} joined room: ${roomId}`);
 
-      socket.to(otherUserId).emit("userOnline", {
+      socket.to(receiverId).emit("user-online", {
         userId: socket.userId,
       });
     });
 
-    socket.on("leaveRoom", ({ otherUserId }) => {
-      const roomId = [socket.userId, otherUserId].sort().join("-");
+    socket.on("send-message", (newMessage) => {
+      console.log(newMessage);
+    })
+
+    socket.on("leave-room", (receiverId) => {
+      const roomId = [socket.userId, receiverId].sort().join("-");
+
       socket.leave(roomId);
+
       console.log(`User ${socket.userId} left room: ${roomId}`);
     });
 
