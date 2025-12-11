@@ -18,14 +18,12 @@ import { selectCurrentUser } from "../auth/authSlice";
 export default function ChatContainer() {
   const { receiverId } = useParams();
 
-  const [senderId, setSenderId] = useState<string>("");
-
-  const user = useAppSelector(selectCurrentUser);
-
-  const [allMessages, setAllMessages] = useState<any[] | null>([]);
+  const [msgReceiverId, setmsgReceiverId] = useState<string>("");
   const [inputMessage, setInputMessage] = useState<string>("");
   const [newMessages, setNewMessages] = useState<string[]>([]);
-  const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [allMessages, setAllMessages] = useState<any[]>([]);
+
+  const user = useAppSelector(selectCurrentUser);
 
   const [sendMessage, { isLoading }] = useSendMessageMutation();
 
@@ -41,7 +39,6 @@ export default function ChatContainer() {
         text: inputMessage,
       }).unwrap();
 
-      setShowMessage(true);
       setInputMessage("");
     } catch (error) {
       console.error(error);
@@ -61,13 +58,9 @@ export default function ChatContainer() {
 
     socket.emit("join-room", receiverId);
 
-    socket.on("new-message", ({ message, senderId, receiverId }) => {
-      setNewMessages((prev) => [...prev, inputMessage]);
-      setSenderId(senderId); 
-
-      console.log(message);
-      console.log(senderId);
-      console.log(receiverId);
+    socket.on("new-message", ({ message, receiverId }) => {
+      setmsgReceiverId(receiverId);
+      setNewMessages((prev) => [...prev, message]);
     });
 
     socket.on("user-online", (userId) => {
@@ -80,16 +73,16 @@ export default function ChatContainer() {
 
     return () => {
       socket.off("connect");
-
       socket.off("connect_error");
-
+      socket.off("new-message");
+      socket.off("join-room");
+      socket.off("user-online");
       socket.disconnect();
     };
   }, [inputMessage, messages, receiverId]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Chat Header */}
       <div className="flex items-center justify-between p-4 border-b bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
@@ -114,49 +107,51 @@ export default function ChatContainer() {
         </div>
       </div>
 
-      {/* Messages Area */}
       <ScrollArea className="flex-1 min-h-0 p-4">
         <div className="flex flex-col gap-4">
-          {/* Received Message */}
-          <div className="flex items-start gap-3 max-w-[80%]">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col gap-1">
-              <div className="rounded-lg bg-muted px-4 py-2">
-                <p className="text-sm">hello</p>
-              </div>
-              <span className="text-xs text-muted-foreground px-2">
-                10:30 AM
-              </span>
-            </div>
-          </div>
-          {/* Sent Message */}
-          {showMessage && receiverId !== senderId ? (
-            <div className="flex items-start gap-3 max-w-[80%] self-end">
-              <div className="flex flex-col gap-1 items-end">
-                <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
-                  <p className="text-sm">{newMessage}</p>
+          {newMessages.map((msg, idx) => {
+            const isReceiver = receiverId !== msgReceiverId;
+
+            return isReceiver ? (
+              <div className="flex items-start gap-3 max-w-[80%]" key={idx}>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1">
+                  <div className="rounded-lg bg-muted px-4 py-2">
+                    <p className="text-sm">{msg}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground px-2">
+                    10:30 AM
+                  </span>
                 </div>
-                <span className="text-xs text-muted-foreground px-2">
-                  10:32 AM
-                </span>
               </div>
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="https://github.com/shadcn.png" alt="You" />
-                <AvatarFallback>ME</AvatarFallback>
-              </Avatar>
-            </div>
-          ) : (
-            <></>
-          )}
+            ) : (
+              <div
+                className="flex items-start gap-3 max-w-[80%] self-end"
+                key={idx}
+              >
+                <div className="flex flex-col gap-1 items-end">
+                  <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
+                    <p className="text-sm">{msg}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground px-2">
+                    10:32 AM
+                  </span>
+                </div>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="You" />
+                  <AvatarFallback>ME</AvatarFallback>
+                </Avatar>
+              </div>
+            );
+          })}
         </div>
       </ScrollArea>
 
       <Separator />
 
-      {/* Input Area */}
       <div className="p-4 bg-background shrink-0">
         <div className="flex items-end gap-2">
           <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
