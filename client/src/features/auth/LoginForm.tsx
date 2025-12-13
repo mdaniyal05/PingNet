@@ -59,6 +59,7 @@ export default function LoginForm({
         const data = response?.data;
 
         user = {
+          _id: data?._id,
           username: data?.username,
           email: data?.email,
           fullname: data?.fullname,
