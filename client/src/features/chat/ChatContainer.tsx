@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { socket } from "./socket";
 import {
   useSendMessageMutation,
@@ -15,135 +14,118 @@ import { useParams } from "react-router";
 import { useAppSelector } from "@/hooks/useStore";
 import { selectCurrentUser } from "../auth/authSlice";
 
+type Message = {
+  senderId: string;
+  receiverId: string;
+  text: string;
+};
+
 export default function ChatContainer() {
-  const { receiverId } = useParams();
-
-  const [msgReceiverId, setmsgReceiverId] = useState<string>("");
-  const [inputMessage, setInputMessage] = useState<string>("");
-  const [newMessages, setNewMessages] = useState<string[]>([]);
-  const [allMessages, setAllMessages] = useState<any[]>([]);
-
+  const { receiverId } = useParams<{ receiverId: string }>();
   const user = useAppSelector(selectCurrentUser);
 
+  const [realtimeMessages, setRealtimeMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
+
+  const { data } = useGetMessagesQuery(receiverId);
   const [sendMessage, { isLoading }] = useSendMessageMutation();
 
-  const { data: messages, isLoading: messagesLoading } =
-    useGetMessagesQuery(receiverId);
-
-  const onClickSendMessage = async () => {
-    try {
-      socket.emit("send-message", inputMessage);
-
-      await sendMessage({
-        _id: receiverId,
-        text: inputMessage,
-      }).unwrap();
-
-      setInputMessage("");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
-    if (messages) {
-      setAllMessages(messages.data?.messages);
-    }
-
     socket.connect();
 
-    socket.on("connect", () => {
-      console.log("Connected to server:", socket.id);
+    socket.on("new-message", (message: Message) => {
+      console.log(message);
+
+      setRealtimeMessages((prev) => [...prev, message]);
     });
 
-    socket.emit("join-room", receiverId);
-
-    socket.on("new-message", ({ message, receiverId }) => {
-      setmsgReceiverId(receiverId);
-      setNewMessages((prev) => [...prev, message]);
-    });
-
-    socket.on("user-online", (userId) => {
-      console.log("Hello: ", userId);
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err.message);
-    });
+    socket.on("connect_error", () => {});
 
     return () => {
-      socket.off("connect");
-      socket.off("connect_error");
       socket.off("new-message");
-      socket.off("join-room");
-      socket.off("user-online");
       socket.disconnect();
     };
-  }, [inputMessage, messages, receiverId]);
+  }, []);
+
+  useEffect(() => {
+    if (receiverId) {
+      socket.emit("join-room", receiverId);
+      setRealtimeMessages([]);
+    }
+  }, [receiverId]);
+
+  const messages: Message[] = useMemo(() => {
+    return [...(data?.data?.messages || []), ...realtimeMessages];
+  }, [data, realtimeMessages]);
+
+  const onSend = async () => {
+    if (!inputMessage.trim() || !receiverId || !user) return;
+
+    const payload = {
+      senderId: user._id,
+      receiverId: receiverId,
+      text: inputMessage,
+    };
+
+    socket.emit("send-message", payload);
+    await sendMessage({ _id: payload.receiverId, text: payload.text }).unwrap();
+  };
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex items-center justify-between p-4 border-b bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
-            <h3 className="text-sm font-semibold">John Doe</h3>
-            <p className="text-xs text-muted-foreground">Active now</p>
+          <div>
+            <h3 className="text-sm font-semibold">Chat</h3>
+            <p className="text-xs text-muted-foreground">Online</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+        <div className="flex gap-2">
+          <Button variant="ghost" size="icon">
             <Phone className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button variant="ghost" size="icon">
             <Video className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button variant="ghost" size="icon">
             <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <ScrollArea className="flex-1 min-h-0 p-4">
+      <ScrollArea className="flex-1 p-4">
         <div className="flex flex-col gap-4">
-          {newMessages.map((msg, idx) => {
-            const isReceiver = receiverId !== msgReceiverId;
+          {messages.map((msg, idx) => {
+            const isMine = msg.senderId === user?._id;
 
-            return isReceiver ? (
-              <div className="flex items-start gap-3 max-w-[80%]" key={idx}>
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1">
-                  <div className="rounded-lg bg-muted px-4 py-2">
-                    <p className="text-sm">{msg}</p>
-                  </div>
-                  <span className="text-xs text-muted-foreground px-2">
-                    10:30 AM
-                  </span>
-                </div>
-              </div>
-            ) : (
+            return (
               <div
-                className="flex items-start gap-3 max-w-[80%] self-end"
                 key={idx}
+                className={`flex gap-3 max-w-[80%] ${
+                  isMine ? "self-end flex-row-reverse" : ""
+                }`}
               >
-                <div className="flex flex-col gap-1 items-end">
-                  <div className="rounded-lg bg-primary text-primary-foreground px-4 py-2">
-                    <p className="text-sm">{msg}</p>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+
+                <div className={`flex flex-col ${isMine ? "items-end" : ""}`}>
+                  <div
+                    className={`rounded-lg px-4 py-2 text-sm ${
+                      isMine ? "bg-primary text-primary-foreground" : "bg-muted"
+                    }`}
+                  >
+                    {msg.text}
                   </div>
-                  <span className="text-xs text-muted-foreground px-2">
-                    10:32 AM
+                  <span className="text-xs text-muted-foreground mt-1">
+                    {new Date().toLocaleTimeString()}
                   </span>
                 </div>
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="You" />
-                  <AvatarFallback>ME</AvatarFallback>
-                </Avatar>
               </div>
             );
           })}
@@ -152,25 +134,18 @@ export default function ChatContainer() {
 
       <Separator />
 
-      <div className="p-4 bg-background shrink-0">
-        <div className="flex items-end gap-2">
-          <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
+      <div className="p-4">
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon">
             <Plus className="h-5 w-5" />
           </Button>
-          <div className="flex-1 relative">
-            <Input
-              placeholder="Type a message..."
-              className="pr-12 min-h-[40px] resize-none"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-            />
-          </div>
-          <Button
-            size="icon"
-            className="h-10 w-10 shrink-0"
-            onClick={onClickSendMessage}
-          >
-            {isLoading ? "Loading..." : <Send className="h-5 w-5" />}
+          <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Type a message..."
+          />
+          <Button size="icon" onClick={onSend} disabled={isLoading}>
+            <Send className="h-5 w-5" />
           </Button>
         </div>
       </div>

@@ -176,6 +176,7 @@ const loginUser = asyncHandler(async (req, res) => {
         200,
         {
           accessToken: accessToken,
+          _id: user._id,
           username: user.username,
           email: user.email,
           fullname: user.fullname,
