@@ -186,7 +186,6 @@ export default function RegisterForm({
             name="password"
             type="password"
             onChange={handleChange}
-            disabled
           />
         </div>
         <div className="grid gap-3">

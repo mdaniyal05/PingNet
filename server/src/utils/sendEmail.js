@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const sendGrid = require("../service/resend");
+const mailSender = require("../service/nodemailer");
 
 const sendEmail = async (email, subject, text, filePath, fileName) => {
   try {
@@ -9,7 +9,7 @@ const sendEmail = async (email, subject, text, filePath, fileName) => {
     let HTML = fs.readFileSync(templatePath, "utf-8");
     HTML = HTML.replace("{{OTP}}", text);
 
-    const mail = await sendGrid(email, subject, text, HTML);
+    const mail = await mailSender(email, subject, text, HTML);
     console.log(mail);
   } catch (error) {
     console.error(error.message);
