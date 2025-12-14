@@ -63,6 +63,7 @@ export default function LoginForm({
           username: data?.username,
           email: data?.email,
           fullname: data?.fullname,
+          avatar: data?.avatar,
         };
 
         token = data?.accessToken;

@@ -72,7 +72,7 @@ export default function ChatContainer() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
       <div className="flex items-center justify-between p-4 border-b bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
@@ -97,7 +97,7 @@ export default function ChatContainer() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 min-h-0 p-4">
         <div className="flex flex-col gap-4">
           {messages.map((msg, idx) => {
             const isMine = msg.senderId === user?._id;
@@ -110,7 +110,7 @@ export default function ChatContainer() {
                 }`}
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src={isMine ? `${user.avatar}` : ""} />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
 

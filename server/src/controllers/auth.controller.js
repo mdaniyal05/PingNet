@@ -180,6 +180,7 @@ const loginUser = asyncHandler(async (req, res) => {
           username: user.username,
           email: user.email,
           fullname: user.fullname,
+          avatar: user.avatar,
         },
         "User logged in successfully."
       )
