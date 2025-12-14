@@ -5,7 +5,7 @@ import { Link } from "react-router";
 
 export default function Chats() {
   const [allFriends, setAllFriends] = React.useState<Friend[]>([]);
-  const [isNewMessage, setIsNewMessage] = React.useState<boolean>(false);
+  // const [isNewMessage, setIsNewMessage] = React.useState<boolean>(false);
 
   const { data: list, isLoading: listLoading } = useShowFriendListQuery({});
 
@@ -30,9 +30,9 @@ export default function Chats() {
                 >
                   <div className="flex w-full items-center gap-2">
                     <span>{item.username}</span>{" "}
-                    {isNewMessage && (
+                    {/* {isNewMessage && (
                       <div className="bg-red-900 rounded-full w-2 h-2"></div>
-                    )}
+                    )} */}
                   </div>
                   <span className="font-medium">{item.fullname}</span>
                 </div>
