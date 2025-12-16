@@ -69,6 +69,8 @@ export default function ChatContainer() {
 
     socket.emit("send-message", payload);
     await sendMessage({ _id: payload.receiverId, text: payload.text }).unwrap();
+
+    setInputMessage("");
   };
 
   return (

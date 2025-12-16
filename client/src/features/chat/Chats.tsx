@@ -5,6 +5,7 @@ import { Link } from "react-router";
 
 export default function Chats() {
   const [allFriends, setAllFriends] = React.useState<Friend[]>([]);
+  const [activeChat, setActiveChat] = React.useState<boolean>(false);
   // const [isNewMessage, setIsNewMessage] = React.useState<boolean>(false);
 
   const { data: list, isLoading: listLoading } = useShowFriendListQuery({});
@@ -14,6 +15,10 @@ export default function Chats() {
       setAllFriends(list?.data?.friendsList?.friendsList);
     }
   }, [list]);
+
+  const onClickActive = () => {
+    setActiveChat(true);
+  };
 
   return (
     <>
@@ -26,7 +31,12 @@ export default function Chats() {
               <Link to={`/sidebar/message/${item._id}`} key={idx}>
                 <div
                   key={item._id}
-                  className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer"
+                  className={
+                    activeChat
+                      ? `bg-sidebar-accent flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer`
+                      : `hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer`
+                  }
+                  onClick={onClickActive}
                 >
                   <div className="flex w-full items-center gap-2">
                     <span>{item.username}</span>{" "}
