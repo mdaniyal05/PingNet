@@ -19,8 +19,7 @@ export default function Hero() {
         transition={{ delay: 0.3 }}
       >
         Connect instantly with your friends and communities. Real-time
-        messaging, redefined.{" "}
-        {"(Still in Development and Will be Completed Soon)"}
+        messaging, redefined.
       </motion.p>
       <motion.div
         className="flex gap-4"
