@@ -2,11 +2,15 @@ import React from "react";
 import { useShowFriendListQuery } from "@/app/api/friendApi";
 import { type Friend } from "../../types/friendTypes";
 import { Link } from "react-router";
+import { currentActiveChat, setActiveChat } from "../chat/socketSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 
 export default function Chats() {
   const [allFriends, setAllFriends] = React.useState<Friend[]>([]);
-  const [activeChat, setActiveChat] = React.useState<boolean>(false);
-  // const [isNewMessage, setIsNewMessage] = React.useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+
+  const isChatActive = useAppSelector(currentActiveChat);
 
   const { data: list, isLoading: listLoading } = useShowFriendListQuery({});
 
@@ -17,7 +21,7 @@ export default function Chats() {
   }, [list]);
 
   const onClickActive = () => {
-    setActiveChat(true);
+    dispatch(setActiveChat(true));
   };
 
   return (
@@ -32,7 +36,7 @@ export default function Chats() {
                 <div
                   key={item._id}
                   className={
-                    activeChat
+                    isChatActive
                       ? `bg-sidebar-accent flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer`
                       : `hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0 cursor-pointer`
                   }
@@ -40,9 +44,6 @@ export default function Chats() {
                 >
                   <div className="flex w-full items-center gap-2">
                     <span>{item.username}</span>{" "}
-                    {/* {isNewMessage && (
-                      <div className="bg-red-900 rounded-full w-2 h-2"></div>
-                    )} */}
                   </div>
                   <span className="font-medium">{item.fullname}</span>
                 </div>
