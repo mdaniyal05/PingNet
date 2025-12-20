@@ -1,24 +1,28 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp-relay.brevo.com",
+  port: 587,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASS,
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_API_KEY,
   },
 });
 
 const mailSender = async (email, subject, text, html) => {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"PingNet" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: subject,
       html: html,
       text: text,
     });
+    console.log("Email sent:", info.messageId);
+    return { success: true };
   } catch (error) {
-    console.error(error);
+    console.error("Email error:", error);
+    return { success: false };
   }
 };
 
