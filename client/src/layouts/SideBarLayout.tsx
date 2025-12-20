@@ -6,8 +6,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import ChatContainer from "@/features/chat/ChatContainer";
 import SearchFriend from "@/features/friend/SearchFriend";
+import ChatLayout from "./ChatLayout";
 
 export default function SideBarLayout() {
   return (
@@ -37,7 +37,7 @@ export default function SideBarLayout() {
             <ModeToggle />
           </div>
         </header>
-        <ChatContainer />
+        <ChatLayout />
       </SidebarInset>
     </SidebarProvider>
   );
