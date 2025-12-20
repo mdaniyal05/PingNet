@@ -4,7 +4,7 @@ const socketAuth = require("./middlewares/socketAuth.middleware");
 function initializeSocket(httpServer, options = {}) {
   const io = new Server(httpServer, {
     cors: {
-      origin: options.corsOrigin || "*",
+      corsOrigin: process.env.CLIENT_URL || "http://localhost:3000",
       methods: ["GET", "POST"],
       credentials: true,
     },

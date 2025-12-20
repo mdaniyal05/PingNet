@@ -17,26 +17,22 @@ const otpRouter = require("./routes/otp.route");
 const friendRouter = require("./routes/friend.route");
 const messageRouter = require("./routes/message.route");
 
-const whiteList = ["http://localhost:3000"];
+const allowedOrigins = ["http://localhost:3000", process.env.CLIENT_URL].filter(
+  Boolean
+);
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whiteList.indexOf(origin) !== -1 || !origin) {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error(`CORS blocked for origin: ${origin}`));
     }
   },
   credentials: true,
 };
 
-const io = initializeSocket(httpServer, {
-  corsOrigin: "http://localhost:3000",
-  redisHost: "localhost",
-  redisPort: 6379,
-  redisPassword: undefined,
-  redisDb: 0,
-});
+const io = initializeSocket(httpServer);
 
 app.set("io", io);
 
