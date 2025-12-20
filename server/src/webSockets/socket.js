@@ -1,6 +1,4 @@
 const { Server } = require("socket.io");
-const { createAdapter } = require("@socket.io/redis-adapter");
-const Redis = require("ioredis");
 const socketAuth = require("./middlewares/socketAuth.middleware");
 
 function initializeSocket(httpServer, options = {}) {
@@ -10,44 +8,11 @@ function initializeSocket(httpServer, options = {}) {
       methods: ["GET", "POST"],
       credentials: true,
     },
-
     pingTimeout: options.pingTimeout || 60000,
     pingInterval: options.pingInterval || 25000,
   });
 
-  const redisConfig = {
-    host: options.redisHost || "localhost",
-    port: options.redisPort || 6379,
-    password: options.redisPassword || undefined,
-    db: options.redisDb || 0,
-    retryStrategy: (times) => {
-      const delay = Math.min(times * 50, 2000);
-      return delay;
-    },
-  };
-
-  const pubClient = new Redis(redisConfig);
-  const subClient = pubClient.duplicate();
-
   io.use(socketAuth);
-
-  pubClient.on("error", (err) => {
-    console.error("Redis Pub Client Error:", err);
-  });
-
-  subClient.on("error", (err) => {
-    console.error("Redis Sub Client Error:", err);
-  });
-
-  pubClient.on("connect", () => {
-    console.log("Redis Publisher connected");
-  });
-
-  subClient.on("connect", () => {
-    console.log("Redis Subscriber connected");
-  });
-
-  io.adapter(createAdapter(pubClient, subClient));
 
   const activeUsers = new Map();
 
@@ -72,7 +37,7 @@ function initializeSocket(httpServer, options = {}) {
 
     socket.on("send-message", (newMessage) => {
       console.log(newMessage);
-    })
+    });
 
     socket.on("leave-room", (receiverId) => {
       const roomId = [socket.userId, receiverId].sort().join("-");
@@ -112,11 +77,7 @@ function initializeSocket(httpServer, options = {}) {
   });
 
   const cleanup = async () => {
-    console.log("Closing Socket.IO connections...");
     await io.close();
-    await pubClient.quit();
-    await subClient.quit();
-    console.log("Socket.IO and Redis connections closed");
   };
 
   process.on("SIGTERM", cleanup);
