@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 const mailSender = async (email, subject, text, html) => {
   try {
     const info = await transporter.sendMail({
-      from: `"PingNet" <${process.env.EMAIL_USER}>`,
+      from: `"PingNet" <${process.env.BREVO_USER}>`,
       to: email,
       subject: subject,
       html: html,
