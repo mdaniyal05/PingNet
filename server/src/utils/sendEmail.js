@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const mailSender = require("../service/nodemailer");
+const mailSender = require("../service/brevo");
 
 const sendEmail = async (email, subject, text, filePath, fileName) => {
   try {
