@@ -1,38 +1,63 @@
-import { motion } from "framer-motion";
+import { Zap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
 
-export default function Hero() {
+export default function PingNetLanding() {
   return (
-    <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-20">
-      <motion.h1
-        className="text-5xl font-bold mb-4"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        PingNet
-      </motion.h1>
-      <motion.p
-        className="text-lg text-muted-foreground max-w-xl mb-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-      >
-        Connect instantly with your friends and communities. Real-time
-        messaging, redefined.
-      </motion.p>
-      <motion.div
-        className="flex gap-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        <Link to="/auth/login">
-          <Button size="lg" className="cursor-pointer">
-            Get Started
-          </Button>
-        </Link>
-      </motion.div>
-    </section>
+    <div className="min-h-screen bg-background">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary rounded-full text-primary-foreground text-sm font-medium mb-6">
+            <Zap className="w-4 h-4" />
+            Free forever
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
+            Connect Instantly,
+            <br />
+            Anywhere in the World
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Experience seamless messaging with PingNet. Fast, simple, and
+            designed for the way you communicate.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg px-8">
+              Github
+            </Button>
+          </div>
+          <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-chart-1" />
+              Free forever
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-chart-1" />
+              No credit card required
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-chart-1" />
+              Web-based
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Start messaging with PingNet today. It's free forever.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg px-8">
+              Sign Up Now
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8">
+              Login
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
