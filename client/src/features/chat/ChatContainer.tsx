@@ -27,7 +27,7 @@ export default function ChatContainer() {
   const [realtimeMessages, setRealtimeMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
 
-  const { data } = useGetMessagesQuery(receiverId);
+  const { data } = useGetMessagesQuery(receiverId, { skip: !receiverId });
   const [sendMessage, { isLoading }] = useSendMessageMutation();
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function ChatContainer() {
       <div className="flex items-center justify-between p-4 border-b bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src="" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <div>

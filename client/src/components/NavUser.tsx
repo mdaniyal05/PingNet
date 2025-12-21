@@ -22,10 +22,10 @@ import { logout, selectCurrentUser } from "@/features/auth/authSlice";
 import { useNavigate } from "react-router";
 import {
   Dialog,
-  // DialogClose,
+  DialogClose,
   DialogContent,
   DialogDescription,
-  // DialogFooter,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,6 +34,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useProfileQuery } from "@/app/api/userApi";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -111,14 +112,16 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src="" alt="Avatar" />
+                  <AvatarImage src={userInfo?.avatar} alt="Avatar" />
                   <AvatarFallback className="rounded-lg">A</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
                     {currentUser?.fullname}
                   </span>
-                  <span className="truncate text-xs">{currentUser?.email}</span>
+                  <span className="truncate text-xs">
+                    {currentUser?.username}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -191,12 +194,12 @@ export function NavUser() {
                             />
                           </div>
                         </div>
-                        {/* <DialogFooter>
+                        <DialogFooter>
                           <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                           </DialogClose>
                           <Button type="submit">Save changes</Button>
-                        </DialogFooter> */}
+                        </DialogFooter>
                       </>
                     )}
                   </DialogContent>
