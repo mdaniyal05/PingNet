@@ -4,6 +4,23 @@ const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
 const uploadFileOnCloudinary = require("../service/cloudinary");
 
+const profile = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const userInfo = await User.findById(userId).select(
+    "-password -refreshToken"
+  );
+
+  if (!userInfo) {
+    res.status(404);
+    throw new ApiError(404, "User not found.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, userInfo, "User information."));
+});
+
 const uploadAvatar = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -51,4 +68,4 @@ const uploadAvatar = asyncHandler(async (req, res) => {
     );
 });
 
-module.exports = { uploadAvatar };
+module.exports = { uploadAvatar, profile };
