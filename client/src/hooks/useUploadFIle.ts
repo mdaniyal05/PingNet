@@ -5,6 +5,16 @@ type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 type uploadFile = File | null;
 
+const API_URL: string = import.meta.env.VITE_API_URL;
+
+let UPLOAD_URL: string;
+
+if (import.meta.env.PROD) {
+  UPLOAD_URL = `${API_URL}/api/v1/users/user/upload-avatar`;
+} else {
+  UPLOAD_URL = "http://localhost:8080/api/v1/users/user/upload-avatar";
+}
+
 export default function useUploadFile(file: uploadFile, email: string) {
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -20,20 +30,16 @@ export default function useUploadFile(file: uploadFile, email: string) {
     formData.append("email", email);
 
     try {
-      await axios.post(
-        "http://localhost:8080/api/v1/users/user/upload-avatar",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (progressEvent) => {
-            const progress = progressEvent.total
-              ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              : 0;
+      await axios.post(UPLOAD_URL, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const progress = progressEvent.total
+            ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            : 0;
 
-            setUploadProgress(progress);
-          },
-        }
-      );
+          setUploadProgress(progress);
+        },
+      });
 
       setStatus("success");
       setUploadProgress(100);
