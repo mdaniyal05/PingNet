@@ -47,20 +47,20 @@ function initializeSocket(httpServer, options = {}) {
       console.log(`User ${socket.userId} left room: ${roomId}`);
     });
 
-    socket.on("typing", ({ receiverId }) => {
-      socket.to(receiverId).emit("userTyping", {
+    socket.on("typing", (receiverId) => {
+      socket.to(receiverId).emit("user-typing", {
         senderId: socket.userId,
       });
     });
 
-    socket.on("stopTyping", ({ receiverId }) => {
-      socket.to(receiverId).emit("userStoppedTyping", {
+    socket.on("stop-typing", (receiverId) => {
+      socket.to(receiverId).emit("user-stopped-typing", {
         senderId: socket.userId,
       });
     });
 
-    socket.on("messageRead", ({ messageId, senderId }) => {
-      socket.to(senderId).emit("messageReadReceipt", {
+    socket.on("message-read", ({ messageId, senderId }) => {
+      socket.to(senderId).emit("message-read-receipt", {
         messageId,
         readBy: socket.userId,
       });
@@ -70,7 +70,7 @@ function initializeSocket(httpServer, options = {}) {
       console.log(`User disconnected: ${socket.id}, UserId: ${socket.userId}`);
       activeUsers.delete(socket.userId);
 
-      socket.broadcast.emit("userOffline", {
+      socket.broadcast.emit("user-offline", {
         userId: socket.userId,
       });
     });

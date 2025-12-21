@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Send, Plus, Phone, Video, MoreVertical } from "lucide-react";
+import { Send, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { socket } from "./socket";
 import {
@@ -22,10 +22,12 @@ type Message = {
 
 export default function ChatContainer() {
   const { receiverId } = useParams<{ receiverId: string }>();
+
   const user = useAppSelector(selectCurrentUser);
 
   const [realtimeMessages, setRealtimeMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   const { data } = useGetMessagesQuery(receiverId, { skip: !receiverId });
   const [sendMessage, { isLoading }] = useSendMessageMutation();
@@ -34,8 +36,6 @@ export default function ChatContainer() {
     socket.connect();
 
     socket.on("new-message", (message: Message) => {
-      console.log(message);
-
       setRealtimeMessages((prev) => [...prev, message]);
     });
 
@@ -53,6 +53,47 @@ export default function ChatContainer() {
       setRealtimeMessages([]);
     }
   }, [receiverId]);
+
+  useEffect(() => {
+    if (!receiverId) return;
+
+    let typingTimeout: NodeJS.Timeout;
+
+    const handleKeyDown = () => {
+      socket.emit("typing", receiverId);
+
+      clearTimeout(typingTimeout);
+
+      typingTimeout = setTimeout(() => {
+        socket.emit("stop-typing", receiverId);
+      }, 1000);
+    };
+
+    addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      removeEventListener("keydown", handleKeyDown);
+      clearTimeout(typingTimeout);
+    };
+  }, [receiverId]);
+
+  useEffect(() => {
+    socket.on("user-stopped-typing", (senderId) => {
+      if (senderId) {
+        setIsTyping(false);
+      }
+    });
+
+    socket.on("user-typing", (senderId) => {
+      if (senderId) {
+        setIsTyping(true);
+      }
+    });
+
+    return () => {
+      socket.off("user-stopped-typing");
+    };
+  }, []);
 
   const messages: Message[] = useMemo(() => {
     return [...(data?.data?.messages || []), ...realtimeMessages];
@@ -83,19 +124,10 @@ export default function ChatContainer() {
           </Avatar>
           <div>
             <h3 className="text-sm font-semibold">Chat</h3>
-            <p className="text-xs text-muted-foreground">Online</p>
+            <p className="text-xs text-muted-foreground">
+              {isTyping ? "Typing..." : "Online"}
+            </p>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon">
-            <Phone className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Video className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
