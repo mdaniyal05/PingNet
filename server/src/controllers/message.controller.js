@@ -3,6 +3,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/apiResponse");
 const uploadFileOnCloudinary = require("../service/cloudinary");
+const { newMessageEvent } = require("../webSockets/events/message.event");
 
 const getMessages = asyncHandler(async (req, res) => {
   const senderId = req.user._id;
@@ -56,8 +57,6 @@ const createMessage = asyncHandler(async (req, res) => {
     uploadedVideo = await uploadFileOnCloudinary(videoLocalPath);
   }
 
-  const roomId = [senderId, receiverId].sort().join("-");
-
   const newMessage = await Message.create({
     senderId,
     receiverId,
@@ -74,11 +73,7 @@ const createMessage = asyncHandler(async (req, res) => {
 
   const io = req.app.get("io");
 
-  io.to(roomId).emit("new-message", {
-    senderId: senderId.toString(),
-    receiverId: receiverId.toString(),
-    text: newMessage.text,
-  });
+  newMessageEvent(io, newMessage, senderId, receiverId);
 
   return res
     .status(201)

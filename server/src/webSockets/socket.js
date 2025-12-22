@@ -30,29 +30,13 @@ function initializeSocket(httpServer, options = {}) {
     roomForIndividualSelfUser(socket);
     roomForTwoUsersChatting(socket);
 
-    socket.on("send-message", (newMessage) => {
-      console.log(newMessage);
-    });
-
     leaveRoom(socket);
 
     startTypingEvent(socket);
     stopTypingEvent(socket);
 
-    socket.on("message-read", ({ messageId, senderId }) => {
-      socket.to(senderId).emit("message-read-receipt", {
-        messageId,
-        readBy: socket.userId,
-      });
-    });
-
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}, UserId: ${socket.userId}`);
       activeUsers.delete(socket.userId);
-
-      socket.broadcast.emit("user-offline", {
-        userId: socket.userId,
-      });
     });
   });
 
