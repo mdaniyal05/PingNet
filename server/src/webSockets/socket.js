@@ -29,9 +29,7 @@ function initializeSocket(httpServer, options = {}) {
 
     roomForIndividualSelfUser(socket);
     roomForTwoUsersChatting(socket);
-
     leaveRoom(socket);
-
     startTypingEvent(socket);
     stopTypingEvent(socket);
 

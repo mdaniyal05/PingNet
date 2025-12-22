@@ -1,6 +1,4 @@
-const newMessageEvent = (io, newMessage, senderId, receiverId) => {
-  const roomId = [senderId, receiverId].sort().join("-");
-
+const newMessageEvent = (io, newMessage, senderId, receiverId, roomId) => {
   io.to(roomId).emit("new-message", {
     senderId: senderId.toString(),
     receiverId: receiverId.toString(),

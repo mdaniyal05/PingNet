@@ -57,6 +57,8 @@ const createMessage = asyncHandler(async (req, res) => {
     uploadedVideo = await uploadFileOnCloudinary(videoLocalPath);
   }
 
+  const roomId = [senderId, receiverId].sort().join("-");
+
   const newMessage = await Message.create({
     senderId,
     receiverId,
@@ -73,7 +75,7 @@ const createMessage = asyncHandler(async (req, res) => {
 
   const io = req.app.get("io");
 
-  newMessageEvent(io, newMessage, senderId, receiverId);
+  newMessageEvent(io, newMessage, senderId, receiverId, roomId);
 
   return res
     .status(201)
