@@ -1,6 +1,11 @@
 const { Server } = require("socket.io");
 const socketAuth = require("./middlewares/socketAuth.middleware");
 const { startTypingEvent, stopTypingEvent } = require("./events/typing.event");
+const {
+  roomForIndividualSelfUser,
+  roomForTwoUsersChatting,
+  leaveRoom,
+} = require("./events/room.event");
 
 function initializeSocket(httpServer, options = {}) {
   const io = new Server(httpServer, {
@@ -22,31 +27,14 @@ function initializeSocket(httpServer, options = {}) {
 
     activeUsers.set(socket.userId, socket.id);
 
-    socket.join(socket.userId);
-
-    socket.on("join-room", (receiverId) => {
-      const roomId = [socket.userId, receiverId].sort().join("-");
-
-      socket.join(roomId);
-
-      console.log(`User ${socket.userId} joined room: ${roomId}`);
-
-      socket.to(receiverId).emit("user-online", {
-        userId: socket.userId,
-      });
-    });
+    roomForIndividualSelfUser(socket);
+    roomForTwoUsersChatting(socket);
 
     socket.on("send-message", (newMessage) => {
       console.log(newMessage);
     });
 
-    socket.on("leave-room", (receiverId) => {
-      const roomId = [socket.userId, receiverId].sort().join("-");
-
-      socket.leave(roomId);
-
-      console.log(`User ${socket.userId} left room: ${roomId}`);
-    });
+    leaveRoom(socket);
 
     startTypingEvent(socket);
     stopTypingEvent(socket);
