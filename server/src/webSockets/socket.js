@@ -23,9 +23,11 @@ function initializeSocket(httpServer, options = {}) {
   const activeUsers = new Map();
 
   io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}, UserId: ${socket.userId}`);
+    if (!activeUsers.has(socket.userId)) {
+      activeUsers.set(socket.userId, new Set());
+    }
 
-    activeUsers.set(socket.userId, socket.id);
+    activeUsers.get(socket.userId).add(socket.id);
 
     roomForIndividualSelfUser(socket);
     roomForTwoUsersChatting(socket);
@@ -33,8 +35,15 @@ function initializeSocket(httpServer, options = {}) {
     startTypingEvent(socket);
     stopTypingEvent(socket);
 
+    const sockets = activeUsers.get(socket.userId);
+
     socket.on("disconnect", () => {
-      activeUsers.delete(socket.userId);
+      if (sockets) {
+        sockets.delete(socket.id);
+        if (sockets.size === 0) {
+          activeUsers.delete(socket.userId);
+        }
+      }
     });
   });
 

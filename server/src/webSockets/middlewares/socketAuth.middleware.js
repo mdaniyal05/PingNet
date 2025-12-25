@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncSocketHandler = require("../utils/asyncSocketHandler");
 const User = require("../../models/user.model");
+const Friend = require("../../models/friend.model");
 
 const socketAuth = asyncSocketHandler(async (socket, next) => {
   try {
@@ -20,15 +21,20 @@ const socketAuth = asyncSocketHandler(async (socket, next) => {
     }
 
     const user = await User.findById(decoded?.payload.userId).select(
-      "-password -refreshToken -avatar -dateOfBirth -about"
+      "-password -refreshToken -dateOfBirth -about"
     );
 
     if (!user) {
       return next(new Error("Socket: Invalid access token."));
     }
 
+    const friends = await Friend.findOne({
+      currentUser: user._id,
+    });
+
     socket.user = user;
     socket.userId = user._id.toString();
+    socket.friends = friends.friendsList.map(String);
     next();
   } catch (error) {
     next(new Error("Socket: Not authorized. Token failed."));
