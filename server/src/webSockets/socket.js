@@ -6,6 +6,7 @@ const {
   roomForTwoUsersChatting,
   leaveRoom,
 } = require("./events/room.event");
+const { onOnlineEvent, onOfflineEvent } = require("./events/online.event");
 
 function initializeSocket(httpServer, options = {}) {
   const io = new Server(httpServer, {
@@ -23,11 +24,19 @@ function initializeSocket(httpServer, options = {}) {
   const activeUsers = new Map();
 
   io.on("connection", (socket) => {
+    const onlineFriends = socket.friends.filter((friendId) =>
+      activeUsers.has(friendId)
+    );
+
+    socket.emit("online-friends", onlineFriends);
+
     if (!activeUsers.has(socket.userId)) {
       activeUsers.set(socket.userId, new Set());
     }
 
     activeUsers.get(socket.userId).add(socket.id);
+
+    onOnlineEvent(socket, activeUsers, io);
 
     roomForIndividualSelfUser(socket);
     roomForTwoUsersChatting(socket);
@@ -38,6 +47,8 @@ function initializeSocket(httpServer, options = {}) {
     const sockets = activeUsers.get(socket.userId);
 
     socket.on("disconnect", () => {
+      onOfflineEvent(socket, activeUsers, io);
+
       if (sockets) {
         sockets.delete(socket.id);
         if (sockets.size === 0) {

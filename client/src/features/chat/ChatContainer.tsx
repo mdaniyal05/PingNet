@@ -28,6 +28,7 @@ export default function ChatContainer() {
   const [realtimeMessages, setRealtimeMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [onlineFriends, setOnlineFriends] = useState<Set<string>>(new Set());
 
   const { data } = useGetMessagesQuery(receiverId, { skip: !receiverId });
   const [sendMessage, { isLoading }] = useSendMessageMutation();
@@ -43,7 +44,6 @@ export default function ChatContainer() {
 
     return () => {
       socket.off("new-message");
-      socket.disconnect();
     };
   }, []);
 
@@ -95,6 +95,35 @@ export default function ChatContainer() {
     };
   }, []);
 
+  useEffect(() => {
+    socket.on("online-friends", (friends: string[]) => {
+      setOnlineFriends(new Set(friends));
+    });
+
+    return () => {
+      socket.off("online-friends");
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on("friend-online", ({ userId }) => {
+      setOnlineFriends((prev) => new Set(prev).add(userId));
+    });
+
+    socket.on("friend-offline", ({ userId }) => {
+      setOnlineFriends((prev) => {
+        const updated = new Set(prev);
+        updated.delete(userId);
+        return updated;
+      });
+    });
+
+    return () => {
+      socket.off("friend-online");
+      socket.off("friend-offline");
+    };
+  }, []);
+
   const messages: Message[] = useMemo(() => {
     return [...(data?.data?.messages || []), ...realtimeMessages];
   }, [data, realtimeMessages]);
@@ -125,7 +154,11 @@ export default function ChatContainer() {
           <div>
             <h3 className="text-sm font-semibold">Chat</h3>
             <p className="text-xs text-muted-foreground">
-              {isTyping ? "Typing..." : "Online"}
+              {isTyping
+                ? "Typing..."
+                : onlineFriends.has(receiverId!)
+                ? "Online"
+                : "Offline"}
             </p>
           </div>
         </div>
