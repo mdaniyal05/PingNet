@@ -145,7 +145,9 @@ export default function ChatContainer() {
     return [...(data?.data?.messages || []), ...realtimeMessages];
   }, [data, realtimeMessages]);
 
-  const onSend = async () => {
+  const onSend = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!inputMessage.trim() || !receiverId || !user) return;
 
     const payload = {
@@ -229,7 +231,7 @@ export default function ChatContainer() {
       </ScrollArea>
       <Separator />
       <div className="p-4">
-        <div className="relative flex gap-2 items-center">
+        <form onSubmit={onSend} className="relative flex gap-2 items-center">
           <Button variant="outline" size="icon">
             <Plus className="h-5 w-5" />
           </Button>
@@ -250,10 +252,10 @@ export default function ChatContainer() {
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Type a message..."
           />
-          <Button size="icon" onClick={onSend} disabled={isLoading}>
+          <Button size="icon" type="submit" disabled={isLoading}>
             <Send className="h-5 w-5" />
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );
