@@ -14,6 +14,7 @@ import { useParams } from "react-router";
 import { useAppSelector } from "@/hooks/useStore";
 import { selectCurrentUser } from "../auth/authSlice";
 import formatDate from "@/helper/formatDate";
+import EmojiPicker from "emoji-picker-react";
 
 type Message = {
   senderId: string;
@@ -36,6 +37,7 @@ export default function ChatContainer() {
     username: "",
     avatar: "",
   });
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { data } = useGetMessagesQuery(receiverId, { skip: !receiverId });
   const [sendMessage, { isLoading }] = useSendMessageMutation();
@@ -156,6 +158,12 @@ export default function ChatContainer() {
     await sendMessage({ _id: payload.receiverId, text: payload.text }).unwrap();
 
     setInputMessage("");
+    setShowEmojiPicker(false);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onEmojiClick = (emojiData: any) => {
+    setInputMessage((prev) => prev + emojiData.emoji);
   };
 
   return (
@@ -178,7 +186,6 @@ export default function ChatContainer() {
           </div>
         </div>
       </div>
-
       <ScrollArea className="flex-1 min-h-0 p-4">
         <div className="flex flex-col gap-4">
           {messages.map((msg, idx) => {
@@ -220,14 +227,24 @@ export default function ChatContainer() {
           })}
         </div>
       </ScrollArea>
-
       <Separator />
-
       <div className="p-4">
-        <div className="flex gap-2">
+        <div className="relative flex gap-2 items-center">
           <Button variant="outline" size="icon">
             <Plus className="h-5 w-5" />
           </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+          >
+            😊
+          </Button>
+          {showEmojiPicker && (
+            <div className="absolute bottom-14 left-0 z-50">
+              <EmojiPicker onEmojiClick={onEmojiClick} width={300} />
+            </div>
+          )}
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
