@@ -1,16 +1,24 @@
+const User = require("../../models/user.model");
+
 const roomForIndividualSelfUser = (socket) => {
   socket.join(socket.userId);
 };
 
-const roomForTwoUsersChatting = (socket) => {
-  socket.on("join-room", (receiverId) => {
-    const roomId = [socket.userId, receiverId].sort().join("-");
+const roomForTwoUsersChatting = (socket, io) => {
+  socket.on("join-room", async (receiverId) => {
+    try {
+      const receiverData = await User.findById(receiverId).select(
+        "username fullname avatar"
+      );
 
-    socket.join(roomId);
+      const roomId = [socket.userId, receiverId].sort().join("-");
 
-    socket.to(receiverId).emit("user-online", {
-      userId: socket.userId,
-    });
+      socket.join(roomId);
+
+      io.to(roomId).emit("receiver-data", receiverData);
+    } catch (error) {
+      console.error(error);
+    }
   });
 };
 

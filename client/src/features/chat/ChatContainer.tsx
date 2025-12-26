@@ -29,6 +29,11 @@ export default function ChatContainer() {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [onlineFriends, setOnlineFriends] = useState<Set<string>>(new Set());
+  const [receiverData, setReceiverData] = useState({
+    fullname: "",
+    username: "",
+    avatar: "",
+  });
 
   const { data } = useGetMessagesQuery(receiverId, { skip: !receiverId });
   const [sendMessage, { isLoading }] = useSendMessageMutation();
@@ -38,6 +43,14 @@ export default function ChatContainer() {
 
     socket.on("new-message", (message: Message) => {
       setRealtimeMessages((prev) => [...prev, message]);
+    });
+
+    socket.on("receiver-data", (receiverData) => {
+      setReceiverData({
+        fullname: receiverData?.fullname,
+        username: receiverData?.username,
+        avatar: receiverData?.avatar,
+      });
     });
 
     socket.on("connect_error", () => {});
@@ -148,11 +161,11 @@ export default function ChatContainer() {
       <div className="flex items-center justify-between p-4 border-b bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src="" />
+            <AvatarImage src={receiverData?.avatar} />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-sm font-semibold">Chat</h3>
+            <h3 className="text-sm font-semibold">{receiverData?.fullname}</h3>
             <p className="text-xs text-muted-foreground">
               {isTyping
                 ? "Typing..."
@@ -177,7 +190,9 @@ export default function ChatContainer() {
                 }`}
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={isMine ? `${user.avatar}` : ""} />
+                  <AvatarImage
+                    src={isMine ? `${user.avatar}` : `${receiverData?.avatar}`}
+                  />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
 

@@ -39,7 +39,7 @@ function initializeSocket(httpServer, options = {}) {
     onOnlineEvent(socket, activeUsers, io);
 
     roomForIndividualSelfUser(socket);
-    roomForTwoUsersChatting(socket);
+    roomForTwoUsersChatting(socket, io);
     leaveRoom(socket);
     startTypingEvent(socket);
     stopTypingEvent(socket);
