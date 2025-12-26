@@ -13,11 +13,13 @@ import {
 import { useParams } from "react-router";
 import { useAppSelector } from "@/hooks/useStore";
 import { selectCurrentUser } from "../auth/authSlice";
+import formatDate from "@/helper/formatDate";
 
 type Message = {
   senderId: string;
   receiverId: string;
   text: string;
+  createdAt: string;
 };
 
 export default function ChatContainer() {
@@ -205,7 +207,7 @@ export default function ChatContainer() {
                     {msg.text}
                   </div>
                   <span className="text-xs text-muted-foreground mt-1">
-                    {new Date().toLocaleTimeString()}
+                    {formatDate(msg.createdAt)}
                   </span>
                 </div>
               </div>

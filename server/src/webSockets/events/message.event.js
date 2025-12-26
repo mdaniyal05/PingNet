@@ -1,9 +1,11 @@
+const formatDate = require("../../helper/formatDate");
+
 const newMessageEvent = (io, newMessage, senderId, receiverId, roomId) => {
   io.to(roomId).emit("new-message", {
     senderId: senderId.toString(),
     receiverId: receiverId.toString(),
     text: newMessage.text,
-    createdAt: newMessage.createdAt,
+    createdAt: formatDate(newMessage.createdAt),
   });
 };
 
