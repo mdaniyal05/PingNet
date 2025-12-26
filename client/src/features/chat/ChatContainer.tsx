@@ -187,26 +187,31 @@ export default function ChatContainer() {
             return (
               <div
                 key={idx}
-                className={`flex gap-3 max-w-[80%] ${
+                className={`flex gap-3 ${
                   isMine ? "self-end flex-row-reverse" : ""
                 }`}
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 shrink-0">
                   <AvatarImage
-                    src={isMine ? `${user.avatar}` : `${receiverData?.avatar}`}
+                    src={isMine ? user.avatar : receiverData?.avatar}
                   />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
 
-                <div className={`flex flex-col ${isMine ? "items-end" : ""}`}>
+                <div
+                  className={`flex flex-col ${
+                    isMine ? "items-end" : "items-start"
+                  } max-w-[75%]`}
+                >
                   <div
-                    className={`rounded-lg px-4 py-2 text-sm ${
+                    className={`inline-block rounded-lg px-4 py-2 text-sm break-words ${
                       isMine ? "bg-primary text-primary-foreground" : "bg-muted"
                     }`}
                   >
                     {msg.text}
                   </div>
-                  <span className="text-xs text-muted-foreground mt-1">
+
+                  <span className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
                     {formatDate(msg.createdAt)}
                   </span>
                 </div>
